@@ -21,9 +21,9 @@ body {
 
 .video-wrapper {
   width: 100%;
-  max-width: 800px; /* większe wideo */
-  max-height: 80vh;  /* wideo może być wyższe, ale nie wyjdzie poza ekran */
-  box-sizing: border-box;
+  max-width: 800px;
+  max-height: 80vh;
+  position: relative;
 }
 
 video {
@@ -33,17 +33,47 @@ video {
   display: block;
   object-fit: contain;
 }
+
+/* overlay Play */
+.play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background: rgba(248, 172, 16, 0.9); /* żółty Xpanol */
+  clip-path: polygon(25% 20%, 25% 80%, 75% 50%); /* trójkąt w prawo */
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.3s;
+}
+
+.play-overlay:hover {
+  background: rgba(248, 172, 16, 1);
+}
 </style>
 
 </head>
 <body>
 
 <div class="video-wrapper">
-  <video controls>
+  <video id="myVideo" controls>
     <source src="PALABRASRAPIDASMD.mp4" type="video/mp4">
     Your browser does not support video. / Tu navegador no soporta video.
   </video>
+  <div class="play-overlay" id="playBtn"></div>
 </div>
+
+<script>
+const video = document.getElementById('myVideo');
+const btn = document.getElementById('playBtn');
+
+btn.addEventListener('click', () => {
+  video.play();
+  btn.style.display = 'none'; // ukryj overlay po kliknięciu
+});
+</script>
 
 </body>
 </html>
