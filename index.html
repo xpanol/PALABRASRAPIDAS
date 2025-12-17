@@ -4,9 +4,13 @@
 <meta charset="UTF-8">
 <title>XPANOL Video Grid</title>
 <style>
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
   background: #000;
+  overflow: hidden;
   font-family: Arial, sans-serif;
 }
 
@@ -15,50 +19,254 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 20px;
-  padding: 20px;
+  gap: 10px;
+  width: 100vw;
   height: 100vh;
+  padding: 5px;
   box-sizing: border-box;
 }
 
-/* BOX VIDEO */
+/* VIDEO BOX */
 .video-box {
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 video {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
+  object-fit: contain;
   background: #000;
+  display: block;
+}
+
+/* ACTIVE VIDEO */
+.video-box.active {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 66%;
+  height: 90%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+/* INACTIVE VIDEO IN BACKGROUND */
+.video-box.inactive video {
+  filter: brightness(0.3);
+}
+
+/* PLAY BUTTON */
+.play-overlay {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 30;
+}
+
+.play-overlay.play::after {
+  content: "";
+  border-left: 22px solid #F8AC10;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+}
+
+.play-overlay.pause::after {
+  content: "";
+  width: 18px;
+  height: 22px;
+  border-left: 6px solid #F8AC10;
+  border-right: 6px solid #F8AC10;
+}
+
+/* SHOW ON HOVER */
+.video-box.active .play-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+.video-box.active:hover .play-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* SEEK BUTTONS */
+.seek-btn {
+  position: absolute;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  color: #F8AC10;
+  cursor: pointer;
+  z-index: 35;
+}
+
+.seek-btn.left { left: 14px; }
+.seek-btn.right { right: 14px; }
+
+.video-box.active:hover .seek-btn {
+  display: flex;
+}
+
+/* CLOSE BUTTON */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 50%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 40;
+}
+.video-box.active .close-btn {
+  display: flex;
+}
+
+/* PROGRESS BAR */
+.progress-bar-container {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+  cursor: pointer;
+  z-index: 30;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #F8AC10;
+  border-radius: 3px;
+}
+
+@media (max-width: 900px) {
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .video-box.active {
+    width: 90%;
+    height: 85%;
+  }
 }
 </style>
 </head>
 <body>
 
 <div class="video-grid">
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video1.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video2.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video3.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video4.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video5.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video6.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline src="videos/video1.mp4"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-box"><video preload="metadata" playsinline src="videos/video2.mp4"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-box"><video preload="metadata" playsinline src="videos/video3.mp4"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-box"><video preload="metadata" playsinline src="videos/video4.mp4"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-box"><video preload="metadata" playsinline src="videos/video5.mp4"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-box"><video preload="metadata" playsinline src="videos/video6.mp4"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
 </div>
 
 <script>
-// Wymuszenie miniatur w Safari: kadr z 2 sekundy
-const videos = document.querySelectorAll('video');
+const wrappers = document.querySelectorAll('.video-box');
+let activeWrapper = null;
 
-videos.forEach(v=>{
-  v.addEventListener('loadedmetadata', ()=>{
-    if(v.duration > 2){
-      v.currentTime = 2;
-    }
-    v.pause();
-    v.currentTime = 0; // powrót na początek, Safari pamięta miniaturę
+function closeActiveVideo(){
+  if(!activeWrapper) return;
+  activeWrapper.querySelector('video').pause();
+  wrappers.forEach(w=>{
+    w.classList.remove('active','inactive');
+    w.querySelector('.play-overlay').className='play-overlay play';
+    w.querySelectorAll('.seek-btn').forEach(s=>s.style.display='none');
+    w.querySelector('.close-btn').style.display='none';
+    removeProgress(w);
   });
+  activeWrapper=null;
+}
 
-  v.pause(); // nie auto-play
+function removeProgress(w){
+  w.querySelectorAll('.progress-bar-container').forEach(p=>p.remove());
+}
+
+function addProgress(w,v){
+  removeProgress(w);
+  const c=document.createElement('div');
+  c.className='progress-bar-container';
+  const b=document.createElement('div');
+  b.className='progress-bar';
+  c.appendChild(b);
+  w.appendChild(c);
+
+  c.onclick=e=>{
+    const r=c.getBoundingClientRect();
+    v.currentTime=((e.clientX-r.left)/r.width)*v.duration;
+  };
+
+  v.addEventListener('timeupdate',()=>{
+    b.style.width=(v.currentTime/v.duration*100)+'%';
+  });
+}
+
+wrappers.forEach(w=>{
+  const v=w.querySelector('video');
+  const overlay=w.querySelector('.play-overlay');
+  const left=w.querySelector('.seek-btn.left');
+  const right=w.querySelector('.seek-btn.right');
+  const close=w.querySelector('.close-btn');
+
+  overlay.onclick=e=>{
+    e.stopPropagation();
+    if(!activeWrapper){
+      wrappers.forEach(x=>{if(x!==w) x.classList.add('inactive');});
+      w.classList.add('active');
+      activeWrapper=w;
+      v.play();
+      overlay.classList.replace('play','pause');
+      addProgress(w,v);
+      // pokaż tylko przyciski aktywnego video
+      left.style.display='flex';
+      right.style.display='flex';
+      close.style.display='flex';
+    }else{
+      if(v.paused){v.play(); overlay.classList.replace('play','pause');}
+      else{v.pause(); overlay.classList.replace('pause','play');}
+    }
+  };
+
+  v.onclick=()=>{if(activeWrapper===w) overlay.onclick(new Event('click'));};
+  
+  left.onclick=e=>{e.stopPropagation(); v.currentTime=Math.max(0,v.currentTime-5);};
+  right.onclick=e=>{e.stopPropagation(); v.currentTime=Math.min(v.duration,v.currentTime+5);};
+  close.onclick=e=>{e.stopPropagation(); closeActiveVideo();};
+});
+
+// ESC do powrotu do miniaturek
+document.addEventListener('keydown',e=>{if(e.key==='Escape') closeActiveVideo();});
+
+// Miniaturki od razu w Safari
+wrappers.forEach(v=>{
+  const vid=v.querySelector('video');
+  vid.addEventListener('loadedmetadata',()=>{
+    if(vid.duration>2){vid.currentTime=2;}
+    vid.pause();
+    vid.currentTime=0;
+  });
+  vid.pause();
 });
 </script>
 
