@@ -2,36 +2,35 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Video MP4</title>
-
+<title>Vertical Videos Grid</title>
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-}
-
 body {
+  margin: 0;
+  padding: 20px;
+  background: #000;
   display: flex;
   justify-content: center;
-  align-items: center;
-  background: #000;
+}
+
+.videos-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 .video-wrapper {
-  width: 100%;
-  max-width: 800px;
-  max-height: 80vh;
   position: relative;
+  width: 200px;
+  max-height: 360px;
 }
 
 video {
   width: 100%;
   height: auto;
-  max-height: 80vh;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 12px;
   cursor: pointer;
 }
 
@@ -41,9 +40,9 @@ video {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
-  background: rgba(255, 255, 255, 0.7); /* biały, półprzezroczysty okrąg */
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -57,69 +56,124 @@ video {
   background: rgba(255, 255, 255, 0.9);
 }
 
-/* trójkąt Play */
 .play-overlay.play::after {
   content: '';
   width: 0;
   height: 0;
-  border-left: 30px solid #F8AC10; /* Xpanol trójkąt */
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
+  border-left: 25px solid #F8AC10;
+  border-top: 17px solid transparent;
+  border-bottom: 17px solid transparent;
 }
 
-/* symbol Pauzy */
 .play-overlay.pause::after {
   content: '';
-  width: 20px;
-  height: 30px;
-  border-left: 8px solid #F8AC10;
-  border-right: 8px solid #F8AC10;
+  width: 16px;
+  height: 24px;
+  border-left: 6px solid #F8AC10;
+  border-right: 6px solid #F8AC10;
 }
-</style>
 
-</head>
-<body>
-
-<div class="video-wrapper">
-  <video id="myVideo">
-    <source src="PALABRASRAPIDASMD.mp4" type="video/mp4">
-    Your browser does not support video. / Tu navegador no soporta video.
-  </video>
-  <div class="play-overlay play" id="playBtn"></div>
-</div>
-
-<script>
-const video = document.getElementById('myVideo');
-const overlay = document.getElementById('playBtn');
-
-// funkcja toggle Play/Pause
-function toggleVideo() {
-  if (video.paused) {
-    video.play();
-    overlay.classList.remove('play');
-    overlay.classList.add('pause');
-  } else {
-    video.pause();
-    overlay.classList.remove('pause');
-    overlay.classList.add('play');
+@media (max-width: 900px) {
+  .video-wrapper {
+    width: 45%;
   }
 }
 
-// kliknięcie na overlay
-overlay.addEventListener('click', toggleVideo);
+@media (max-width: 600px) {
+  .video-wrapper {
+    width: 90%;
+  }
+}
+</style>
+</head>
+<body>
 
-// kliknięcie w samo wideo
-video.addEventListener('click', toggleVideo);
+<div class="videos-container">
 
-// ukryj overlay po pierwszym odtworzeniu, pokaż gdy pauza
-video.addEventListener('play', () => {
-  overlay.style.display = 'none';
-});
+  <div class="video-wrapper">
+    <video src="video1.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
 
-video.addEventListener('pause', () => {
-  overlay.style.display = 'flex';
-  overlay.classList.remove('play');
-  overlay.classList.add('play');
+  <div class="video-wrapper">
+    <video src="video2.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="video3.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="video4.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="video5.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="video6.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+
+</div>
+
+<script>
+// Zatrzymuje wszystkie wideo oprócz tego, które ma być odtwarzane
+function stopAllExcept(currentVideo) {
+  document.querySelectorAll('.video-wrapper video').forEach(v => {
+    if (v !== currentVideo && !v.paused) {
+      v.pause();
+    }
+  });
+
+  // overlay dla zatrzymanych wideo
+  document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+    const video = wrapper.querySelector('video');
+    const overlay = wrapper.querySelector('.play-overlay');
+    if (video !== currentVideo && video.paused) {
+      overlay.style.display = 'flex';
+      overlay.classList.remove('pause');
+      overlay.classList.add('play');
+    }
+  });
+}
+
+document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+  const video = wrapper.querySelector('video');
+  const overlay = wrapper.querySelector('.play-overlay');
+
+  function toggleVideo() {
+    if (video.paused) {
+      stopAllExcept(video); // zatrzymaj inne wideo
+      video.play();
+      overlay.classList.remove('play');
+      overlay.classList.add('pause');
+      overlay.style.display = 'none';
+    } else {
+      video.pause();
+      overlay.classList.remove('pause');
+      overlay.classList.add('play');
+      overlay.style.display = 'flex';
+    }
+  }
+
+  overlay.addEventListener('click', toggleVideo);
+  video.addEventListener('click', toggleVideo);
+
+  video.addEventListener('play', () => {
+    overlay.style.display = 'none';
+  });
+
+  video.addEventListener('pause', () => {
+    overlay.style.display = 'flex';
+    overlay.classList.remove('pause');
+    overlay.classList.add('play');
+  });
 });
 </script>
 
