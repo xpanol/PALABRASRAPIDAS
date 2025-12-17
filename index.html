@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Vertical Videos Grid</title>
+<title>Vertical Videos Grid Focus</title>
 <style>
 body {
   margin: 0;
@@ -17,13 +17,17 @@ body {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  max-width: 660px; /* 3 wideo po 200px + 2*20px odstęp */
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
 }
 
 .video-wrapper {
   position: relative;
-  width: 200px;
-  max-height: 360px;
+  flex: 1 1 calc(33.333% - 13.33px);
+  max-width: 400px;
+  transition: transform 0.4s ease, z-index 0.4s ease;
+  cursor: pointer;
 }
 
 video {
@@ -32,7 +36,7 @@ video {
   display: block;
   object-fit: cover;
   border-radius: 12px;
-  cursor: pointer;
+  transition: transform 0.4s ease, filter 0.4s ease, opacity 0.4s ease;
 }
 
 /* overlay Play/Pause */
@@ -57,7 +61,6 @@ video {
   background: rgba(255, 255, 255, 0.9);
 }
 
-/* trójkąt Play */
 .play-overlay.play::after {
   content: '';
   width: 0;
@@ -67,7 +70,6 @@ video {
   border-bottom: 17px solid transparent;
 }
 
-/* symbol Pauzy */
 .play-overlay.pause::after {
   content: '';
   width: 16px;
@@ -76,16 +78,31 @@ video {
   border-right: 6px solid #F8AC10;
 }
 
-/* responsywność */
+/* efekt aktywnego wideo */
+.video-wrapper.active {
+  flex: 1 1 100%;
+  max-width: 90%;
+  z-index: 100;
+}
+
+.video-wrapper:not(.active) video {
+  filter: brightness(0.5) blur(2px);
+  opacity: 0.5;
+}
+
 @media (max-width: 900px) {
   .video-wrapper {
-    width: 45%; /* 2 wideo w rzędzie */
+    flex: 1 1 calc(50% - 10px);
+    max-width: 100%;
+  }
+  .video-wrapper.active {
+    flex: 1 1 100%;
   }
 }
 
 @media (max-width: 600px) {
   .video-wrapper {
-    width: 90%; /* 1 wideo w rzędzie */
+    flex: 1 1 100%;
   }
 }
 </style>
@@ -127,56 +144,57 @@ video {
 </div>
 
 <script>
-// Zatrzymuje wszystkie wideo oprócz tego, które ma być odtwarzane
-function stopAllExcept(currentVideo) {
-  document.querySelectorAll('.video-wrapper video').forEach(v => {
-    if (v !== currentVideo && !v.paused) {
-      v.pause();
-    }
-  });
+const wrappers = document.querySelectorAll('.video-wrapper');
 
-  // overlay dla zatrzymanych wideo
-  document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+function stopAllExcept(currentVideo) {
+  wrappers.forEach(wrapper => {
     const video = wrapper.querySelector('video');
     const overlay = wrapper.querySelector('.play-overlay');
-    if (video !== currentVideo && video.paused) {
+    if (video !== currentVideo) {
+      video.pause();
       overlay.style.display = 'flex';
       overlay.classList.remove('pause');
       overlay.classList.add('play');
+      wrapper.classList.remove('active');
     }
   });
 }
 
-document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+wrappers.forEach(wrapper => {
   const video = wrapper.querySelector('video');
   const overlay = wrapper.querySelector('.play-overlay');
 
-  function toggleVideo() {
-    if (video.paused) {
-      stopAllExcept(video); // zatrzymaj inne wideo
-      video.play();
-      overlay.classList.remove('play');
-      overlay.classList.add('pause');
-      overlay.style.display = 'none';
-    } else {
+  function activateVideo() {
+    if (!video.paused) {
       video.pause();
       overlay.classList.remove('pause');
       overlay.classList.add('play');
       overlay.style.display = 'flex';
+      wrapper.classList.remove('active');
+    } else {
+      stopAllExcept(video);
+      video.play();
+      overlay.classList.remove('play');
+      overlay.classList.add('pause');
+      overlay.style.display = 'none';
+      wrapper.classList.add('active');
+      wrapper.scrollIntoView({behavior: "smooth", block: "center"});
     }
   }
 
-  overlay.addEventListener('click', toggleVideo);
-  video.addEventListener('click', toggleVideo);
+  overlay.addEventListener('click', activateVideo);
+  video.addEventListener('click', activateVideo);
 
   video.addEventListener('play', () => {
     overlay.style.display = 'none';
+    wrapper.classList.add('active');
   });
 
   video.addEventListener('pause', () => {
     overlay.style.display = 'flex';
     overlay.classList.remove('pause');
     overlay.classList.add('play');
+    wrapper.classList.remove('active');
   });
 });
 </script>
