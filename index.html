@@ -91,6 +91,14 @@ function addProgress(w,v){
   v.addEventListener('timeupdate',()=>{b.style.width=(v.currentTime/v.duration*100)+'%';});
 }
 
+// Safari fix: wymuś widoczność miniaturek
+window.addEventListener('load', () => {
+  wrappers.forEach(w => {
+    const v = w.querySelector('video');
+    v.play().then(() => v.pause()).catch(()=>{});
+  });
+});
+
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeActiveVideo();});
 </script>
 
