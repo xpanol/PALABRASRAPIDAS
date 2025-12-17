@@ -1,14 +1,12 @@
-
 <!doctype html>
 <html lang="pl">
 <head>
 <meta charset="utf-8">
-<title>Video Safari Safe</title>
 
 <style>
 body {
   margin: 0;
-  background: #000;
+  background: black;
 }
 
 .grid {
@@ -25,11 +23,11 @@ body {
 video {
   width: 100%;
   height: auto;
+  background: black;
   display: block;
-  background: #000;
 }
 
-.play-btn {
+.play {
   position: absolute;
   inset: 0;
   display: flex;
@@ -37,12 +35,8 @@ video {
   justify-content: center;
   font-size: 60px;
   color: white;
-  cursor: pointer;
   background: rgba(0,0,0,0.25);
-}
-
-.play-btn.hidden {
-  display: none;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -55,42 +49,42 @@ video {
     <video preload="metadata">
       <source src="videos/video1.mp4" type="video/mp4">
     </video>
-    <div class="play-btn">▶</div>
+    <div class="play">▶</div>
   </div>
 
   <div class="video-box">
     <video preload="metadata">
       <source src="videos/video2.mp4" type="video/mp4">
     </video>
-    <div class="play-btn">▶</div>
+    <div class="play">▶</div>
   </div>
 
   <div class="video-box">
     <video preload="metadata">
       <source src="videos/video3.mp4" type="video/mp4">
     </video>
-    <div class="play-btn">▶</div>
+    <div class="play">▶</div>
   </div>
 
   <div class="video-box">
     <video preload="metadata">
       <source src="videos/video4.mp4" type="video/mp4">
     </video>
-    <div class="play-btn">▶</div>
+    <div class="play">▶</div>
   </div>
 
   <div class="video-box">
     <video preload="metadata">
       <source src="videos/video5.mp4" type="video/mp4">
     </video>
-    <div class="play-btn">▶</div>
+    <div class="play">▶</div>
   </div>
 
   <div class="video-box">
     <video preload="metadata">
       <source src="videos/video6.mp4" type="video/mp4">
     </video>
-    <div class="play-btn">▶</div>
+    <div class="play">▶</div>
   </div>
 
 </div>
@@ -98,19 +92,19 @@ video {
 <script>
 document.querySelectorAll('.video-box').forEach(box => {
   const video = box.querySelector('video');
-  const play = box.querySelector('.play-btn');
+  const play = box.querySelector('.play');
 
   play.addEventListener('click', () => {
     video.play();
-    play.classList.add('hidden');
+    play.style.display = 'none';
   });
 
   video.addEventListener('pause', () => {
-    play.classList.remove('hidden');
+    play.style.display = 'flex';
   });
 
   video.addEventListener('ended', () => {
-    play.classList.remove('hidden');
+    play.style.display = 'flex';
   });
 });
 </script>
