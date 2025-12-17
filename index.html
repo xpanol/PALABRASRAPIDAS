@@ -1,122 +1,62 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <title>XPANOL Video Grid</title>
-
 <style>
-html,body{
-  margin:0;
-  padding:0;
-  background:#000;
-  font-family:Arial, sans-serif;
+body {
+  margin: 0;
+  background: #000;
+  font-family: Arial, sans-serif;
 }
 
-/* GRID */
-.video-grid{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:20px;
-  padding:20px;
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
 }
 
-/* BOX */
-.video-box{
-  position:relative;
+.video-box {
+  position: relative;
 }
 
-/* VIDEO */
-video{
-  width:100%;
-  height:auto;
-  display:block;
-  background:#000;
-}
-
-/* DOMYŚLNIE: TYLKO PLAY (Safari) */
-.video-box:not(.active) video::-webkit-media-controls-timeline,
-.video-box:not(.active) video::-webkit-media-controls-current-time-display,
-.video-box:not(.active) video::-webkit-media-controls-time-remaining-display,
-.video-box:not(.active) video::-webkit-media-controls-volume-slider,
-.video-box:not(.active) video::-webkit-media-controls-fullscreen-button{
-  display:none !important;
-}
-
-/* AKTYWNE VIDEO: PEŁNE KONTROLKI */
-.video-box.active video::-webkit-media-controls{
-  display:flex !important;
+video {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #000;
 }
 </style>
 </head>
-
 <body>
 
 <div class="video-grid">
-
-  <div class="video-box">
-    <video preload="metadata" playsinline controls>
-      <source src="videos_mp4/video1.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="video-box">
-    <video preload="metadata" playsinline controls>
-      <source src="videos_mp4/video2.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="video-box">
-    <video preload="metadata" playsinline controls>
-      <source src="videos_mp4/video3.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="video-box">
-    <video preload="metadata" playsinline controls>
-      <source src="videos_mp4/video4.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="video-box">
-    <video preload="metadata" playsinline controls>
-      <source src="videos_mp4/video5.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <div class="video-box">
-    <video preload="metadata" playsinline controls>
-      <source src="videos_mp4/video6.mp4" type="video/mp4">
-    </video>
-  </div>
-
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video1.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video2.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video3.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video4.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video5.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video6.mp4"></video></div>
 </div>
 
 <script>
-const boxes = document.querySelectorAll('.video-box');
+// Wymuszamy pokazanie miniatur w Safari
+const videos = document.querySelectorAll('video');
 
-boxes.forEach(box=>{
-  const video = box.querySelector('video');
-
-  video.addEventListener('play', ()=>{
-    boxes.forEach(other=>{
-      const v = other.querySelector('video');
-      if(other !== box){
-        v.pause();
-        other.classList.remove('active');
-      }
-    });
-    box.classList.add('active');
-  });
-
-  video.addEventListener('pause', ()=>{
-    if(!video.ended){
-      box.classList.add('active');
+videos.forEach(v=>{
+  v.addEventListener('loadedmetadata', ()=>{
+    // ustawiamy krótko na 2s i pauza, żeby wygenerować miniaturę
+    if(v.duration > 2){
+      v.currentTime = 2;
     }
+    v.pause();
+    // wracamy na początek, ale Safari pamięta miniaturę
+    v.currentTime = 0;
   });
 
-  video.addEventListener('ended', ()=>{
-    box.classList.remove('active');
-  });
+  // Zapobiegamy automatycznemu odtwarzaniu
+  v.pause();
 });
 </script>
 
