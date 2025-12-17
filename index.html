@@ -2,119 +2,264 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Video Grid Safari Friendly</title>
+<title>Video Grid</title>
+
 <style>
-html, body {margin:0; padding:0; width:100%; height:100%; background:#000; font-family:sans-serif;}
-.videos-container {width:95vw; height:95vh; margin:0 auto; padding:20px 0; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:12px; position:relative;}
-.video-wrapper {position:relative; border-radius:12px; overflow:hidden; display:flex; justify-content:center; align-items:center; background:#000;}
-.video-wrapper video {width:100%; height:100%; object-fit:contain; display:block; pointer-events:none;}
-.video-wrapper.inactive video {filter: blur(4px) brightness(0.35);}
-.video-wrapper.active {position:absolute; top:50%; left:50%; width:66%; height:90%; transform:translate(-50%,-50%); z-index:100; pointer-events:auto;}
-.play-overlay {position:absolute; width:64px; height:64px; background:rgba(255,255,255,0.7); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:200; pointer-events:auto;}
-.play-overlay.play::after {content:""; border-left:22px solid #F8AC10; border-top:14px solid transparent; border-bottom:14px solid transparent;}
-.play-overlay.pause::after {content:""; width:18px; height:22px; border-left:6px solid #F8AC10; border-right:6px solid #F8AC10;}
-.seek-btn {position:absolute; top:50%; width:48px; height:48px; background:rgba(255,255,255,0.7); border-radius:50%; display:none; justify-content:center; align-items:center; font-size:22px; color:#F8AC10; cursor:pointer; z-index:200;}
-.seek-btn.left {left:14px;}
-.seek-btn.right {right:14px;}
-.close-btn {position:absolute; top:12px; right:12px; width:36px; height:36px; background:rgba(255,255,255,0.75); border-radius:50%; display:none; justify-content:center; align-items:center; font-size:22px; cursor:pointer; z-index:200;}
-.progress-bar-container {position:absolute; bottom:10px; left:10px; right:10px; height:6px; background:rgba(255,255,255,0.3); border-radius:3px; cursor:pointer; z-index:200;}
-.progress-bar {height:100%; width:0%; background:#F8AC10; border-radius:3px;}
-@media(max-width:900px){.videos-container{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);}.video-wrapper.active{width:90%;height:85%;}}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  font-family: sans-serif;
+}
+
+.videos-container {
+  width: 95vw;
+  height: 95vh;
+  margin: auto;
+  padding: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+  position: relative;
+}
+
+.video-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* UKRYWAMY NATYWNE CONTROLS */
+.video-wrapper video::-webkit-media-controls {
+  display: none !important;
+}
+
+.video-wrapper video {
+  pointer-events: none;
+}
+
+.video-wrapper.inactive video {
+  filter: blur(4px) brightness(0.35);
+}
+
+.video-wrapper.active {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 66%;
+  height: 90%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+/* PLAY */
+.play-overlay {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.play-overlay.play::after {
+  content: "";
+  border-left: 22px solid #F8AC10;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+}
+
+.play-overlay.pause::after {
+  content: "";
+  width: 18px;
+  height: 22px;
+  border-left: 6px solid #F8AC10;
+  border-right: 6px solid #F8AC10;
+}
+
+/* PRZEWIJANIE I CLOSE */
+.seek-btn,
+.close-btn {
+  position: absolute;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  color: #F8AC10;
+  cursor: pointer;
+  z-index: 30;
+}
+
+.seek-btn {
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+}
+
+.seek-btn.left { left: 14px; }
+.seek-btn.right { right: 14px; }
+
+.close-btn {
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+}
+
+/* TYLKO DLA AKTYWNEGO VIDEO */
+.video-wrapper.active .seek-btn,
+.video-wrapper.active .close-btn {
+  display: flex;
+}
+
+@media (max-width: 900px) {
+  .videos-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .video-wrapper.active {
+    width: 90%;
+    height: 85%;
+  }
+}
 </style>
 </head>
+
 <body>
 
 <div class="videos-container">
-  <div class="video-wrapper"><video src="videos/video1.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video2.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video3.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video4.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video5.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video6.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+
+  <div class="video-wrapper">
+    <video src="videos/video1.mp4" muted playsinline preload="metadata" controls></video>
+    <div class="play-overlay play"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video2.mp4" muted playsinline preload="metadata" controls></video>
+    <div class="play-overlay play"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video3.mp4" muted playsinline preload="metadata" controls></video>
+    <div class="play-overlay play"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video4.mp4" muted playsinline preload="metadata" controls></video>
+    <div class="play-overlay play"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video5.mp4" muted playsinline preload="metadata" controls></video>
+    <div class="play-overlay play"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video6.mp4" muted playsinline preload="metadata" controls></video>
+    <div class="play-overlay play"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
+  </div>
+
 </div>
 
 <script>
-const container=document.querySelector('.videos-container');
-const wrappers=document.querySelectorAll('.video-wrapper');
-let activeWrapper=null;
+const wrappers = document.querySelectorAll('.video-wrapper');
+let active = null;
 
-// wymuszanie pokazania miniatur w Safari
-wrappers.forEach(w=>{
-  const v=w.querySelector('video');
-  v.currentTime = 0.01;
+function closeActive() {
+  if (!active) return;
+  const v = active.querySelector('video');
   v.pause();
-});
-
-function closeActiveVideo(){
-  if(!activeWrapper) return;
-  activeWrapper.querySelector('video').pause();
-  container.classList.remove('has-active');
-  wrappers.forEach(w=>{
-    w.classList.remove('active','inactive');
-    w.querySelector('.play-overlay').className='play-overlay play';
-    w.querySelectorAll('.progress-bar-container').forEach(p=>p.remove());
-    // pokazujemy przyciski ponownie dla wszystkich
-    w.querySelector('.play-overlay').style.display='flex';
-    w.querySelector('.seek-btn.left').style.display='flex';
-    w.querySelector('.seek-btn.right').style.display='flex';
-    w.querySelector('.close-btn').style.display='flex';
-  });
-  activeWrapper=null;
+  active.classList.remove('active');
+  wrappers.forEach(w => w.classList.remove('inactive'));
+  active = null;
 }
 
-function addProgress(w,v){
-  const c=document.createElement('div'); c.className='progress-bar-container';
-  const b=document.createElement('div'); b.className='progress-bar';
-  c.appendChild(b); w.appendChild(c);
-  c.onclick=e=>{const r=c.getBoundingClientRect(); v.currentTime=((e.clientX-r.left)/r.width)*v.duration;}
-  v.addEventListener('timeupdate',()=>{b.style.width=(v.currentTime/v.duration*100)+'%';});
-}
+wrappers.forEach(w => {
+  const v = w.querySelector('video');
+  const play = w.querySelector('.play-overlay');
+  const left = w.querySelector('.seek-btn.left');
+  const right = w.querySelector('.seek-btn.right');
+  const close = w.querySelector('.close-btn');
 
-wrappers.forEach(w=>{
-  const v=w.querySelector('video');
-  const overlay=w.querySelector('.play-overlay');
-  const left=w.querySelector('.seek-btn.left');
-  const right=w.querySelector('.seek-btn.right');
-  const close=w.querySelector('.close-btn');
-
-  overlay.onclick=e=>{
+  play.onclick = e => {
     e.stopPropagation();
-    if(!activeWrapper){
-      container.classList.add('has-active');
-      wrappers.forEach(x=>{if(x!==w)x.classList.add('inactive');});
+
+    if (!active) {
+      wrappers.forEach(x => { if (x !== w) x.classList.add('inactive'); });
       w.classList.add('active');
-      activeWrapper=w;
-      v.muted=false;
+      active = w;
+      v.muted = false;
       v.play();
-      overlay.classList.replace('play','pause');
-
-      // pokazujemy tylko przyciski aktywnego wideo
-      overlay.style.display='flex';
-      left.style.display='flex';
-      right.style.display='flex';
-      close.style.display='flex';
-      wrappers.forEach(x=>{
-        if(x!==w){
-          x.querySelector('.play-overlay').style.display='none';
-          x.querySelector('.seek-btn.left').style.display='none';
-          x.querySelector('.seek-btn.right').style.display='none';
-          x.querySelector('.close-btn').style.display='none';
-        }
-      });
-
-      addProgress(w,v);
-    } else if(activeWrapper===w){
-      if(v.paused){v.play(); overlay.classList.replace('play','pause');}
-      else{v.pause(); overlay.classList.replace('pause','play');}
+      play.classList.replace('play','pause');
+    } else if (active === w) {
+      if (v.paused) {
+        v.play();
+        play.classList.replace('play','pause');
+      } else {
+        v.pause();
+        play.classList.replace('pause','play');
+      }
     }
   };
 
-  left.onclick=e=>{e.stopPropagation(); v.currentTime=Math.max(0,v.currentTime-5);}
-  right.onclick=e=>{e.stopPropagation(); v.currentTime=Math.min(v.duration,v.currentTime+5);}
-  close.onclick=e=>{e.stopPropagation(); closeActiveVideo();}
+  left.onclick = e => {
+    e.stopPropagation();
+    v.currentTime = Math.max(0, v.currentTime - 5);
+  };
+
+  right.onclick = e => {
+    e.stopPropagation();
+    v.currentTime = Math.min(v.duration, v.currentTime + 5);
+  };
+
+  close.onclick = e => {
+    e.stopPropagation();
+    closeActive();
+  };
 });
 
-document.addEventListener('keydown', e=>{if(e.key==='Escape') closeActiveVideo();});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeActive();
+});
 </script>
 
 </body>
