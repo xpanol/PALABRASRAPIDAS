@@ -38,22 +38,22 @@ const container=document.querySelector('.videos-container');
 const wrappers=document.querySelectorAll('.video-wrapper');
 let activeWrapper=null;
 
-// wymuszanie pokazania miniatur w Safari
+// wymuszenie miniatur w Safari
 wrappers.forEach(w=>{
   const v=w.querySelector('video');
-  v.currentTime = 0.01;
+  v.currentTime=0.01;
   v.pause();
 });
 
 function closeActiveVideo(){
-  if(!activeWrapper) return;
+  if(!activeWrapper)return;
   activeWrapper.querySelector('video').pause();
   container.classList.remove('has-active');
   wrappers.forEach(w=>{
     w.classList.remove('active','inactive');
     w.querySelector('.play-overlay').className='play-overlay play';
     w.querySelectorAll('.progress-bar-container').forEach(p=>p.remove());
-    // pokazujemy przyciski ponownie dla wszystkich
+    // przywróć przyciski miniaturkom
     w.querySelector('.play-overlay').style.display='flex';
     w.querySelector('.seek-btn.left').style.display='flex';
     w.querySelector('.seek-btn.right').style.display='flex';
@@ -88,11 +88,8 @@ wrappers.forEach(w=>{
       v.play();
       overlay.classList.replace('play','pause');
 
-      // pokazujemy tylko przyciski aktywnego wideo
-      overlay.style.display='flex';
-      left.style.display='flex';
-      right.style.display='flex';
-      close.style.display='flex';
+      // widoczne tylko przyciski aktywnego wideo
+      [overlay,left,right,close].forEach(btn=>btn.style.display='flex');
       wrappers.forEach(x=>{
         if(x!==w){
           x.querySelector('.play-overlay').style.display='none';
@@ -101,8 +98,8 @@ wrappers.forEach(w=>{
           x.querySelector('.close-btn').style.display='none';
         }
       });
-
       addProgress(w,v);
+
     } else if(activeWrapper===w){
       if(v.paused){v.play(); overlay.classList.replace('play','pause');}
       else{v.pause(); overlay.classList.replace('pause','play');}
