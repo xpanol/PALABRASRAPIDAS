@@ -2,24 +2,141 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Video Grid Safari Friendly</title>
+<title>Video Grid</title>
 <style>
-html, body {margin:0; padding:0; width:100%; height:100%; background:#000; font-family:sans-serif;}
-.videos-container {width:95vw; height:95vh; margin:0 auto; padding:20px 0; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:12px; position:relative;}
-.video-wrapper {position:relative; border-radius:12px; overflow:hidden; display:flex; justify-content:center; align-items:center; background:#000;}
-.video-wrapper video {width:100%; height:100%; object-fit:contain; display:block; pointer-events:none;}
-.video-wrapper.inactive video {filter: blur(4px) brightness(0.35);}
-.video-wrapper.active {position:absolute; top:50%; left:50%; width:66%; height:90%; transform:translate(-50%,-50%); z-index:100; pointer-events:auto;}
-.play-overlay {position:absolute; width:64px; height:64px; background:rgba(255,255,255,0.7); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:200; pointer-events:auto;}
-.play-overlay.play::after {content:""; border-left:22px solid #F8AC10; border-top:14px solid transparent; border-bottom:14px solid transparent;}
-.play-overlay.pause::after {content:""; width:18px; height:22px; border-left:6px solid #F8AC10; border-right:6px solid #F8AC10;}
-.seek-btn, .close-btn {position:absolute; top:50%; width:48px; height:48px; background:rgba(255,255,255,0.7); border-radius:50%; display:none; justify-content:center; align-items:center; font-size:22px; color:#F8AC10; cursor:pointer; z-index:200;}
-.seek-btn.left {left:14px; top:50%;}
-.seek-btn.right {right:14px; top:50%;}
-.close-btn {top:12px; right:12px; width:36px; height:36px; font-size:22px;}
-.progress-bar-container {position:absolute; bottom:10px; left:10px; right:10px; height:6px; background:rgba(255,255,255,0.3); border-radius:3px; cursor:pointer; z-index:200;}
-.progress-bar {height:100%; width:0%; background:#F8AC10; border-radius:3px;}
-@media(max-width:900px){.videos-container{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);}.video-wrapper.active{width:90%;height:85%;}}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
+.videos-container {
+  width: 95vw;
+  height: 95vh;
+  margin: auto;
+  padding: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+  position: relative;
+}
+
+.video-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+}
+
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.video-wrapper.inactive video {
+  filter: blur(4px) brightness(0.35);
+}
+
+.video-wrapper.active {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 66%;
+  height: 90%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  pointer-events: auto;
+}
+
+.play-overlay {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 200;
+  pointer-events: auto;
+}
+
+.play-overlay.play::after {
+  content: "";
+  border-left: 22px solid #F8AC10;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+}
+
+.play-overlay.pause::after {
+  content: "";
+  width: 18px;
+  height: 22px;
+  border-left: 6px solid #F8AC10;
+  border-right: 6px solid #F8AC10;
+}
+
+.seek-btn, .close-btn {
+  position: absolute;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  color: #F8AC10;
+  cursor: pointer;
+  z-index: 200;
+}
+
+.seek-btn.left { left: 14px; }
+.seek-btn.right { right: 14px; }
+.close-btn { top: 12px; right: 12px; width: 36px; height: 36px; font-size: 22px; }
+
+.progress-bar-container {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+  cursor: pointer;
+  z-index: 200;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #F8AC10;
+  border-radius: 3px;
+}
+
+@media(max-width:900px){
+  .videos-container{
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(3,1fr);
+  }
+  .video-wrapper.active{
+    width: 90%;
+    height: 85%;
+  }
+}
 </style>
 </head>
 <body>
@@ -34,40 +151,36 @@ html, body {margin:0; padding:0; width:100%; height:100%; background:#000; font-
 </div>
 
 <script>
-const container=document.querySelector('.videos-container');
 const wrappers=document.querySelectorAll('.video-wrapper');
 let activeWrapper=null;
 
-// wymuszenie miniatur w Safari
-wrappers.forEach(w=>{
-  const v=w.querySelector('video');
-  v.currentTime=0.01;
-  v.pause();
-});
-
-function closeActiveVideo(){
-  if(!activeWrapper)return;
-  activeWrapper.querySelector('video').pause();
-  container.classList.remove('has-active');
+function resetButtons() {
   wrappers.forEach(w=>{
-    w.classList.remove('active','inactive');
-    w.querySelector('.play-overlay').className='play-overlay play';
-    w.querySelectorAll('.progress-bar-container').forEach(p=>p.remove());
-    // przywróć przyciski play wszystkim miniaturkom
-    w.querySelector('.play-overlay').style.display='flex';
-    // przyciski przewijania i close niewidoczne
     w.querySelector('.seek-btn.left').style.display='none';
     w.querySelector('.seek-btn.right').style.display='none';
     w.querySelector('.close-btn').style.display='none';
+    w.querySelector('.play-overlay').style.display='flex';
   });
+}
+
+function closeActiveVideo(){
+  if(!activeWrapper) return;
+  activeWrapper.querySelector('video').pause();
+  activeWrapper.classList.remove('active');
+  wrappers.forEach(w=>w.classList.remove('inactive'));
+  resetButtons();
   activeWrapper=null;
 }
 
 function addProgress(w,v){
+  w.querySelectorAll('.progress-bar-container').forEach(p=>p.remove());
   const c=document.createElement('div'); c.className='progress-bar-container';
   const b=document.createElement('div'); b.className='progress-bar';
   c.appendChild(b); w.appendChild(c);
-  c.onclick=e=>{const r=c.getBoundingClientRect(); v.currentTime=((e.clientX-r.left)/r.width)*v.duration;}
+  c.onclick=e=>{
+    const r=c.getBoundingClientRect();
+    v.currentTime=((e.clientX-r.left)/r.width)*v.duration;
+  };
   v.addEventListener('timeupdate',()=>{b.style.width=(v.currentTime/v.duration*100)+'%';});
 }
 
@@ -78,10 +191,10 @@ wrappers.forEach(w=>{
   const right=w.querySelector('.seek-btn.right');
   const close=w.querySelector('.close-btn');
 
+  // miniaturka play
   overlay.onclick=e=>{
     e.stopPropagation();
     if(!activeWrapper){
-      container.classList.add('has-active');
       wrappers.forEach(x=>{if(x!==w)x.classList.add('inactive');});
       w.classList.add('active');
       activeWrapper=w;
@@ -89,11 +202,12 @@ wrappers.forEach(w=>{
       v.play();
       overlay.classList.replace('play','pause');
 
-      // widoczne tylko przyciski aktywnego wideo
+      // aktywne przyciski tylko dla tego video
+      overlay.style.display='flex';
       left.style.display='flex';
       right.style.display='flex';
       close.style.display='flex';
-      // przyciski play pozostają widoczne dla wszystkich miniatur
+
       wrappers.forEach(x=>{
         if(x!==w){
           x.querySelector('.seek-btn.left').style.display='none';
@@ -116,6 +230,5 @@ wrappers.forEach(w=>{
 
 document.addEventListener('keydown', e=>{if(e.key==='Escape') closeActiveVideo();});
 </script>
-
 </body>
 </html>
