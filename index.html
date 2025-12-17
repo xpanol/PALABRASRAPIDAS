@@ -2,136 +2,118 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>TikTok Grid with Hover Controls & ESC</title>
+<title>Video Grid</title>
+
 <style>
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
   background: #000;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-family: sans-serif;
 }
 
 .videos-container {
+  width: 95vw;
+  height: 95vh;
+  margin: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 10px;
-  width: 95vw;
-  height: 95vh;
-  max-width: 1200px;
-  max-height: 100vh;
+  gap: 12px;
   position: relative;
 }
 
 .video-wrapper {
   position: relative;
-  overflow: hidden;
   border-radius: 12px;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.5s ease, z-index 0.5s ease;
+  transition: all 0.4s ease;
 }
 
-video {
+.video-wrapper video {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  border-radius: 12px;
-  transition: transform 0.5s ease, filter 0.5s ease, opacity 0.5s ease;
+  background: #000;
 }
 
-/* overlay Play/Pause */
-.play-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 10;
-  transition: opacity 0.3s ease;
-}
-
-.play-overlay.play::after {
-  content: '';
-  width: 0;
-  height: 0;
-  border-left: 20px solid #F8AC10;
-  border-top: 14px solid transparent;
-  border-bottom: 14px solid transparent;
-}
-
-.play-overlay.pause::after {
-  content: '';
-  width: 14px;
-  height: 20px;
-  border-left: 5px solid #F8AC10;
-  border-right: 5px solid #F8AC10;
-}
-
-/* pauza pojawia się tylko na hover dla aktywnego wideo */
-.video-wrapper.active .play-overlay {
-  display: none;
-}
-.video-wrapper.active:hover .play-overlay {
-  display: flex;
-  opacity: 1;
+.video-wrapper.inactive video {
+  filter: blur(4px) brightness(0.35);
 }
 
 .video-wrapper.active {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: calc(2 * (100% / 3) - 10px);
-  height: calc(2 * (100% / 2) - 10px);
-  transform: translate(-50%, -50%) scale(1);
+  width: 66%;
+  height: 90%;
+  transform: translate(-50%, -50%);
   z-index: 100;
-  animation: zoomIn 0.5s ease forwards;
 }
 
-@keyframes zoomIn {
-  0% { transform: translate(-50%, -50%) scale(0.9); }
-  100% { transform: translate(-50%, -50%) scale(1); }
-}
-
-.video-wrapper.inactive video {
-  filter: brightness(0.3) blur(3px);
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.control-btn {
+.play-overlay {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
+  width: 64px;
+  height: 64px;
   background: rgba(255,255,255,0.7);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  z-index: 110;
-  font-size: 24px;
-  color: #F8AC10;
-  user-select: none;
+  z-index: 20;
 }
 
-.control-btn.left { left: 10px; }
-.control-btn.right { right: 10px; }
+.play-overlay.play::after {
+  content: "";
+  border-left: 22px solid #F8AC10;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+}
+
+.play-overlay.pause::after {
+  content: "";
+  width: 18px;
+  height: 22px;
+  border-left: 6px solid #F8AC10;
+  border-right: 6px solid #F8AC10;
+}
+
+.video-wrapper.active .play-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-wrapper.active:hover .play-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 50%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 30;
+}
+
+.video-wrapper.active .close-btn {
+  display: flex;
+}
 
 .progress-bar-container {
   position: absolute;
@@ -142,15 +124,14 @@ video {
   background: rgba(255,255,255,0.3);
   border-radius: 3px;
   cursor: pointer;
-  z-index: 120;
+  z-index: 25;
 }
 
 .progress-bar {
-  width: 0%;
   height: 100%;
+  width: 0%;
   background: #F8AC10;
   border-radius: 3px;
-  transition: width 0.1s linear;
 }
 
 @media (max-width: 900px) {
@@ -158,164 +139,147 @@ video {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
   }
-  .video-wrapper.active {
-    width: calc(2 * (100% / 2) - 10px);
-    height: calc(2 * (100% / 3) - 10px);
-  }
-}
 
-@media (max-width: 600px) {
-  .videos-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(6, 1fr);
-  }
   .video-wrapper.active {
     width: 90%;
-    height: auto;
+    height: 85%;
   }
 }
 </style>
 </head>
+
 <body>
 
 <div class="videos-container">
-  <div class="video-wrapper"><video src="videos/video1.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-wrapper"><video src="videos/video2.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-wrapper"><video src="videos/video3.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-wrapper"><video src="videos/video4.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-wrapper"><video src="videos/video5.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-wrapper"><video src="videos/video6.mp4"></video><div class="play-overlay play"></div></div>
+
+  <div class="video-wrapper">
+    <video src="videos/video1.mp4"></video>
+    <div class="play-overlay play"></div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video2.mp4"></video>
+    <div class="play-overlay play"></div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video3.mp4"></video>
+    <div class="play-overlay play"></div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video4.mp4"></video>
+    <div class="play-overlay play"></div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video5.mp4"></video>
+    <div class="play-overlay play"></div>
+    <div class="close-btn">✕</div>
+  </div>
+
+  <div class="video-wrapper">
+    <video src="videos/video6.mp4"></video>
+    <div class="play-overlay play"></div>
+    <div class="close-btn">✕</div>
+  </div>
+
 </div>
 
 <script>
 const wrappers = document.querySelectorAll('.video-wrapper');
 let activeWrapper = null;
 
-function stopAllExcept(currentVideo) {
-  wrappers.forEach(wrapper => {
-    const video = wrapper.querySelector('video');
-    const overlay = wrapper.querySelector('.play-overlay');
-    if(video !== currentVideo){
-      video.pause();
-      overlay.style.display = 'flex';
-      overlay.classList.remove('pause');
-      overlay.classList.add('play');
-      wrapper.classList.remove('active','inactive');
-      removeControls(wrapper);
-      removeProgress(wrapper);
-    }
+function closeActiveVideo() {
+  if(!activeWrapper) return;
+
+  activeWrapper.querySelector('video').pause();
+
+  wrappers.forEach(w => {
+    w.classList.remove('active','inactive');
+    const o = w.querySelector('.play-overlay');
+    o.className = 'play-overlay play';
+    o.style.display = 'flex';
+    removeProgress(w);
   });
-}
 
-function setInactiveExcept(currentWrapper) {
-  wrappers.forEach(wrapper => {
-    if(wrapper !== currentWrapper) wrapper.classList.add('inactive');
-    else wrapper.classList.remove('inactive');
-  });
-}
-
-function addControls(wrapper, video) {
-  removeControls(wrapper);
-  const leftBtn = document.createElement('div');
-  leftBtn.classList.add('control-btn','left');
-  leftBtn.innerHTML = '&#9664;';
-  leftBtn.onclick = e => { e.stopPropagation(); video.currentTime = Math.max(0, video.currentTime - 5); };
-
-  const rightBtn = document.createElement('div');
-  rightBtn.classList.add('control-btn','right');
-  rightBtn.innerHTML = '&#9654;';
-  rightBtn.onclick = e => { e.stopPropagation(); video.currentTime = Math.min(video.duration, video.currentTime + 5); };
-
-  wrapper.appendChild(leftBtn);
-  wrapper.appendChild(rightBtn);
-}
-
-function removeControls(wrapper) {
-  wrapper.querySelectorAll('.control-btn').forEach(btn => btn.remove());
-}
-
-function addProgressBar(wrapper, video) {
-  removeProgress(wrapper);
-  const container = document.createElement('div');
-  container.classList.add('progress-bar-container');
-
-  const bar = document.createElement('div');
-  bar.classList.add('progress-bar');
-  container.appendChild(bar);
-
-  container.onclick = e => {
-    const rect = container.getBoundingClientRect();
-    const pos = (e.clientX - rect.left) / rect.width;
-    video.currentTime = pos * video.duration;
-  };
-
-  wrapper.appendChild(container);
-
-  video.addEventListener('timeupdate', () => {
-    const percent = (video.currentTime / video.duration) * 100;
-    bar.style.width = percent + '%';
-  });
+  activeWrapper = null;
 }
 
 function removeProgress(wrapper) {
-  wrapper.querySelectorAll('.progress-bar-container').forEach(el => el.remove());
+  wrapper.querySelectorAll('.progress-bar-container').forEach(p => p.remove());
 }
 
-function deactivateActiveVideo() {
-  if(activeWrapper){
-    const video = activeWrapper.querySelector('video');
-    video.pause();
-    activeWrapper.classList.remove('active');
-    removeControls(activeWrapper);
-    removeProgress(activeWrapper);
-    wrappers.forEach(w => {
-      w.classList.remove('inactive');
-      const overlay = w.querySelector('.play-overlay');
-      overlay.style.display = 'flex';
-      overlay.classList.remove('pause');
-      overlay.classList.add('play');
-    });
-    activeWrapper = null;
-  }
+function addProgress(wrapper, video) {
+  removeProgress(wrapper);
+
+  const container = document.createElement('div');
+  container.className = 'progress-bar-container';
+  const bar = document.createElement('div');
+  bar.className = 'progress-bar';
+
+  container.appendChild(bar);
+  wrapper.appendChild(container);
+
+  container.onclick = e => {
+    const r = container.getBoundingClientRect();
+    video.currentTime = ((e.clientX - r.left) / r.width) * video.duration;
+  };
+
+  video.addEventListener('timeupdate', () => {
+    bar.style.width = (video.currentTime / video.duration * 100) + '%';
+  });
 }
 
 wrappers.forEach(wrapper => {
   const video = wrapper.querySelector('video');
   const overlay = wrapper.querySelector('.play-overlay');
+  const closeBtn = wrapper.querySelector('.close-btn');
 
-  function toggleVideo() {
-    if(!video.paused){
-      video.pause();
-      overlay.classList.remove('pause');
-      overlay.classList.add('play');
-      wrapper.classList.remove('active');
-      removeControls(wrapper);
-      removeProgress(wrapper);
-      wrappers.forEach(w => w.classList.remove('inactive'));
-      activeWrapper = null;
-    } else {
-      stopAllExcept(video);
-      setInactiveExcept(wrapper);
-      video.play();
-      overlay.classList.remove('play');
-      overlay.classList.add('pause');
-      wrapper.classList.add('active');
-      addControls(wrapper, video);
-      addProgressBar(wrapper, video);
+  overlay.onclick = e => {
+    e.stopPropagation();
+
+    if(activeWrapper && activeWrapper !== wrapper) return;
+
+    if(!activeWrapper){
       wrappers.forEach(w => {
-        if(w !== wrapper) w.querySelector('.play-overlay').style.display = 'none';
+        if(w !== wrapper) w.classList.add('inactive');
       });
-      activeWrapper = wrapper;
-    }
-  }
 
-  overlay.addEventListener('click', toggleVideo);
-  video.addEventListener('click', toggleVideo);
+      wrapper.classList.add('active');
+      activeWrapper = wrapper;
+      video.play();
+      addProgress(wrapper, video);
+      overlay.classList.replace('play','pause');
+    } else {
+      if(video.paused){
+        video.play();
+        overlay.classList.replace('play','pause');
+      } else {
+        video.pause();
+        overlay.classList.replace('pause','play');
+      }
+    }
+  };
+
+  video.onclick = () => {
+    if(activeWrapper === wrapper){
+      overlay.onclick(new Event('click'));
+    }
+  };
+
+  closeBtn.onclick = e => {
+    e.stopPropagation();
+    closeActiveVideo();
+  };
 });
 
-// ESC key to close active video
 document.addEventListener('keydown', e => {
-  if(e.key === "Escape") deactivateActiveVideo();
+  if(e.key === 'Escape') closeActiveVideo();
 });
 </script>
 
