@@ -7,13 +7,12 @@
 html, body {margin:0; padding:0; width:100%; height:100%; background:#000; overflow:hidden; font-family:sans-serif;}
 .videos-container {width:95vw; height:95vh; margin:0 auto; padding:20px 0; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:12px; position:relative;}
 .video-wrapper {position:relative; border-radius:12px; overflow:hidden; display:flex; justify-content:center; align-items:center;}
-.video-wrapper video {width:100%; height:100%; object-fit:contain; background:#000;}
+.video-wrapper video {width:100%; height:100%; object-fit:contain; background:#000; display:block;}
 .video-wrapper.inactive video {filter: blur(4px) brightness(0.35);}
 .video-wrapper.active {position:absolute; top:50%; left:50%; width:66%; height:90%; transform:translate(-50%,-50%); z-index:100;}
-.play-overlay {position:absolute; width:64px; height:64px; background:rgba(255,255,255,0.7); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:30;}
+.play-overlay {position:absolute; width:64px; height:64px; background:rgba(255,255,255,0.7); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:30; opacity:0;}
 .play-overlay.play::after {content:""; border-left:22px solid #F8AC10; border-top:14px solid transparent; border-bottom:14px solid transparent;}
 .play-overlay.pause::after {content:""; width:18px; height:22px; border-left:6px solid #F8AC10; border-right:6px solid #F8AC10;}
-.video-wrapper.active .play-overlay {opacity:0; pointer-events:none;}
 .video-wrapper.active:hover .play-overlay {opacity:1; pointer-events:auto;}
 .seek-btn {position:absolute; top:50%; width:48px; height:48px; background:rgba(255,255,255,0.7); border-radius:50%; display:none; justify-content:center; align-items:center; font-size:22px; color:#F8AC10; cursor:pointer; z-index:35;}
 .seek-btn.left {left:14px;}
@@ -31,12 +30,12 @@ html, body {margin:0; padding:0; width:100%; height:100%; background:#000; overf
 <body>
 
 <div class="videos-container">
-  <div class="video-wrapper"><video src="videos/video1.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video2.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video3.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video4.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video5.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video6.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video1.mp4" playsinline muted preload="auto"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video2.mp4" playsinline muted preload="auto"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video3.mp4" playsinline muted preload="auto"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video4.mp4" playsinline muted preload="auto"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video5.mp4" playsinline muted preload="auto"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video6.mp4" playsinline muted preload="auto"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
 </div>
 
 <script>
@@ -73,7 +72,7 @@ wrappers.forEach(w=>{
       v.play();
       overlay.classList.replace('play','pause');
       addProgress(w,v);
-    }else if(activeWrapper===w){
+    } else if(activeWrapper===w){
       if(v.paused){v.play();overlay.classList.replace('play','pause');}
       else{v.pause();overlay.classList.replace('pause','play');}
     }
