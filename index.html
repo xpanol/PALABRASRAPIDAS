@@ -268,4 +268,36 @@ wrappers.forEach(w => {
       w.classList.add('active');
       active = w;
       v.play();
-      play.className = 'play-overla
+      play.className = 'play-overlay pause';
+
+      const p = document.createElement('div');
+      p.className = 'progress-bar';
+      p.innerHTML = '<span></span>';
+      w.appendChild(p);
+
+      v.ontimeupdate = () => {
+        p.firstChild.style.width = (v.currentTime / v.duration * 100) + '%';
+      };
+    } else {
+      if (v.paused) {
+        v.play();
+        play.className = 'play-overlay pause';
+      } else {
+        v.pause();
+        play.className = 'play-overlay play';
+      }
+    }
+  };
+
+  left.onclick = e => { e.stopPropagation(); v.currentTime = Math.max(0, v.currentTime - 5); };
+  right.onclick = e => { e.stopPropagation(); v.currentTime = Math.min(v.duration, v.currentTime + 5); };
+  close.onclick = e => { e.stopPropagation(); resetView(); };
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') resetView();
+});
+</script>
+
+</body>
+</html>
