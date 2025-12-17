@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Video Grid</title>
+<title>Video Grid Safari Friendly</title>
 
 <style>
 html, body {
@@ -184,53 +184,12 @@ html, body {
 
 <div class="videos-container">
 
-  <div class="video-wrapper">
-    <video src="videos/video1.mp4" playsinline muted></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video2.mp4" playsinline muted></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video3.mp4" playsinline muted></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video4.mp4" playsinline muted></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video5.mp4" playsinline muted></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video6.mp4" playsinline muted></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
+  <div class="video-wrapper"><video src="videos/video1.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video2.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video3.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video4.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video5.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video6.mp4" playsinline muted preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
 
 </div>
 
@@ -239,27 +198,28 @@ const container = document.querySelector('.videos-container');
 const wrappers = document.querySelectorAll('.video-wrapper');
 let activeWrapper = null;
 
-/* MINIATURKI Z 2 SEKUNDY BEZ ZMIANY STARTU WIDEO */
+/* MINIATURKI Z 2 SEKUNDY (Safari Friendly) */
 wrappers.forEach(w => {
   const v = w.querySelector('video');
-
   const temp = document.createElement('video');
   temp.src = v.src;
   temp.muted = true;
   temp.playsInline = true;
   temp.preload = 'metadata';
-  temp.addEventListener('loadedmetadata', () => {
-    const snapTime = Math.min(2, temp.duration);
-    temp.currentTime = snapTime;
+  temp.style.display = 'none';
+  document.body.appendChild(temp);
+
+  temp.addEventListener('loadeddata', () => {
+    temp.currentTime = Math.min(2, temp.duration);
   });
 
   temp.addEventListener('seeked', () => {
     const canvas = document.createElement('canvas');
     canvas.width = temp.videoWidth;
     canvas.height = temp.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(temp, 0, 0, canvas.width, canvas.height);
+    canvas.getContext('2d').drawImage(temp, 0, 0, canvas.width, canvas.height);
     v.setAttribute('poster', canvas.toDataURL('image/jpeg'));
+    temp.remove();
   });
 });
 
@@ -307,20 +267,9 @@ wrappers.forEach(w => {
     }
   };
 
-  left.onclick = e => {
-    e.stopPropagation();
-    v.currentTime = Math.max(0, v.currentTime - 5);
-  };
-
-  right.onclick = e => {
-    e.stopPropagation();
-    v.currentTime = Math.min(v.duration, v.currentTime + 5);
-  };
-
-  close.onclick = e => {
-    e.stopPropagation();
-    closeActiveVideo();
-  };
+  left.onclick = e => { e.stopPropagation(); v.currentTime = Math.max(0, v.currentTime - 5); };
+  right.onclick = e => { e.stopPropagation(); v.currentTime = Math.min(v.duration, v.currentTime + 5); };
+  close.onclick = e => { e.stopPropagation(); closeActiveVideo(); };
 });
 
 function addProgress(w, v){
