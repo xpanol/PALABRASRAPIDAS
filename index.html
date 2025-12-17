@@ -40,6 +40,13 @@ const container=document.querySelector('.videos-container');
 const wrappers=document.querySelectorAll('.video-wrapper');
 let activeWrapper=null;
 
+// Funkcja wymusza załadowanie pierwszej klatki w miniaturkach
+wrappers.forEach(w=>{
+  const v=w.querySelector('video');
+  v.currentTime = 0.01; // Safari pokaże ramkę
+  v.pause();
+});
+
 function closeActiveVideo(){
   if(!activeWrapper)return;
   activeWrapper.querySelector('video').pause();
