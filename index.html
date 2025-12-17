@@ -55,6 +55,7 @@ function closeActiveVideo(){
     w.querySelectorAll('.progress-bar-container').forEach(p=>p.remove());
     // przywróć przyciski play wszystkim miniaturkom
     w.querySelector('.play-overlay').style.display='flex';
+    // przyciski przewijania i close niewidoczne
     w.querySelector('.seek-btn.left').style.display='none';
     w.querySelector('.seek-btn.right').style.display='none';
     w.querySelector('.close-btn').style.display='none';
@@ -92,13 +93,12 @@ wrappers.forEach(w=>{
       left.style.display='flex';
       right.style.display='flex';
       close.style.display='flex';
+      // przyciski play pozostają widoczne dla wszystkich miniatur
       wrappers.forEach(x=>{
         if(x!==w){
           x.querySelector('.seek-btn.left').style.display='none';
           x.querySelector('.seek-btn.right').style.display='none';
           x.querySelector('.close-btn').style.display='none';
-          // przyciski play zawsze widoczne
-          x.querySelector('.play-overlay').style.display='flex';
         }
       });
       addProgress(w,v);
