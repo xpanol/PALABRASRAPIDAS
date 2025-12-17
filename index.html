@@ -2,30 +2,34 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
-<title>Video Grid Safari Safe</title>
+<title>Video Grid Safari Stable</title>
 
 <style>
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
   background: #000;
+  overflow: hidden;
 }
 
 .videos-container {
-  width: 95vw;
-  height: 95vh;
+  width: 94vw;
+  height: 94vh;
   margin: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 16px;
-  padding: 20px;
+  gap: 14px;
+  position: relative;
+  padding: 3vh 0;
   box-sizing: border-box;
 }
 
 .video-wrapper {
   position: relative;
-  background: black;
+  background: #000;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -34,31 +38,122 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: black;
   display: block;
+  background: #000;
 }
 
+/* tło przy aktywnym */
+.video-wrapper.inactive video {
+  filter: brightness(0.35);
+}
+
+/* aktywne video */
+.video-wrapper.active {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 65%;
+  height: 90%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+/* PLAY / PAUSE */
 .play-overlay {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 56px;
-  color: #F8AC10;
-  background: rgba(0,0,0,0.25);
+  align-items: center;
   cursor: pointer;
+  background: rgba(0,0,0,0.25);
+  z-index: 10;
 }
 
-.video-wrapper.playing .play-overlay {
+.play-overlay::after {
+  content: "▶";
+  font-size: 60px;
+  color: #F8AC10;
+}
+
+.play-overlay.pause::after {
+  content: "❚❚";
+  font-size: 54px;
+}
+
+/* play tylko w miniaturach */
+.video-wrapper.active .play-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-wrapper.active:hover .play-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* PRZEWIJANIE */
+.seek-btn {
+  position: absolute;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.75);
   display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  color: #F8AC10;
+  cursor: pointer;
+  z-index: 20;
 }
 
-@media (max-width: 900px) {
-  .videos-container {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-  }
+.seek-btn.left { left: 14px; }
+.seek-btn.right { right: 14px; }
+
+.video-wrapper.active:hover .seek-btn {
+  display: flex;
+}
+
+/* CLOSE */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 25;
+}
+
+.video-wrapper.active .close-btn {
+  display: flex;
+}
+
+/* PROGRESS */
+.progress-bar-container {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  height: 6px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+  z-index: 20;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: #F8AC10;
+  border-radius: 3px;
 }
 </style>
 </head>
@@ -67,67 +162,133 @@ html, body {
 
 <div class="videos-container">
 
+  <!-- POWIEL TEN BLOK 6x -->
   <div class="video-wrapper">
-    <video muted playsinline preload="metadata">
-      <source src="videos/video1.mp4" type="video/mp4">
-    </video>
-    <div class="play-overlay">▶</div>
+    <video muted playsinline preload="metadata" src="videos/video1.mp4"></video>
+    <div class="play-overlay"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
   </div>
 
   <div class="video-wrapper">
-    <video muted playsinline preload="metadata">
-      <source src="videos/video2.mp4" type="video/mp4">
-    </video>
-    <div class="play-overlay">▶</div>
+    <video muted playsinline preload="metadata" src="videos/video2.mp4"></video>
+    <div class="play-overlay"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
   </div>
 
   <div class="video-wrapper">
-    <video muted playsinline preload="metadata">
-      <source src="videos/video3.mp4" type="video/mp4">
-    </video>
-    <div class="play-overlay">▶</div>
+    <video muted playsinline preload="metadata" src="videos/video3.mp4"></video>
+    <div class="play-overlay"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
   </div>
 
   <div class="video-wrapper">
-    <video muted playsinline preload="metadata">
-      <source src="videos/video4.mp4" type="video/mp4">
-    </video>
-    <div class="play-overlay">▶</div>
+    <video muted playsinline preload="metadata" src="videos/video4.mp4"></video>
+    <div class="play-overlay"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
   </div>
 
   <div class="video-wrapper">
-    <video muted playsinline preload="metadata">
-      <source src="videos/video5.mp4" type="video/mp4">
-    </video>
-    <div class="play-overlay">▶</div>
+    <video muted playsinline preload="metadata" src="videos/video5.mp4"></video>
+    <div class="play-overlay"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
   </div>
 
   <div class="video-wrapper">
-    <video muted playsinline preload="metadata">
-      <source src="videos/video6.mp4" type="video/mp4">
-    </video>
-    <div class="play-overlay">▶</div>
+    <video muted playsinline preload="metadata" src="videos/video6.mp4"></video>
+    <div class="play-overlay"></div>
+    <div class="seek-btn left">◀</div>
+    <div class="seek-btn right">▶</div>
+    <div class="close-btn">✕</div>
   </div>
 
 </div>
 
 <script>
-document.querySelectorAll('.video-wrapper').forEach(wrap => {
-  const video = wrap.querySelector('video');
-  const play = wrap.querySelector('.play-overlay');
+const wrappers = document.querySelectorAll('.video-wrapper');
+let active = null;
 
-  play.addEventListener('click', () => {
-    video.play();
-    wrap.classList.add('playing');
+function resetView() {
+  wrappers.forEach(w => {
+    w.classList.remove('active','inactive');
+    w.querySelector('video').pause();
+    removeProgress(w);
   });
+  active = null;
+}
 
-  video.addEventListener('pause', () => {
-    wrap.classList.remove('playing');
-  });
+function removeProgress(w) {
+  w.querySelectorAll('.progress-bar-container').forEach(p => p.remove());
+}
 
-  video.addEventListener('ended', () => {
-    wrap.classList.remove('playing');
+function addProgress(w, v) {
+  const c = document.createElement('div');
+  c.className = 'progress-bar-container';
+  const b = document.createElement('div');
+  b.className = 'progress-bar';
+  c.appendChild(b);
+  w.appendChild(c);
+
+  v.addEventListener('timeupdate', () => {
+    b.style.width = (v.currentTime / v.duration * 100) + '%';
   });
+}
+
+wrappers.forEach(w => {
+  const v = w.querySelector('video');
+  const play = w.querySelector('.play-overlay');
+  const left = w.querySelector('.seek-btn.left');
+  const right = w.querySelector('.seek-btn.right');
+  const close = w.querySelector('.close-btn');
+
+  play.onclick = e => {
+    e.stopPropagation();
+
+    if(!active) {
+      wrappers.forEach(x => { if(x !== w) x.classList.add('inactive'); });
+      w.classList.add('active');
+      active = w;
+      v.play();
+      play.classList.add('pause');
+      addProgress(w, v);
+    } else {
+      if(v.paused) {
+        v.play();
+        play.classList.add('pause');
+      } else {
+        v.pause();
+        play.classList.remove('pause');
+      }
+    }
+  };
+
+  left.onclick = e => {
+    e.stopPropagation();
+    v.currentTime = Math.max(0, v.currentTime - 5);
+  };
+
+  right.onclick = e => {
+    e.stopPropagation();
+    v.currentTime = Math.min(v.duration, v.currentTime + 5);
+  };
+
+  close.onclick = e => {
+    e.stopPropagation();
+    resetView();
+  };
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') resetView();
 });
 </script>
 
