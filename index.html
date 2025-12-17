@@ -21,15 +21,18 @@ body {
 
 .video-wrapper {
   width: 100%;
-  max-width: 720px;
-  padding: 16px;
+  max-width: 640px;
+  max-height: 70vh;
+  padding: 12px;
   box-sizing: border-box;
 }
 
 video {
   width: 100%;
   height: auto;
+  max-height: 70vh;
   display: block;
+  object-fit: contain;
 }
 </style>
 
@@ -39,7 +42,7 @@ video {
 <div class="video-wrapper">
   <video controls>
     <source src="PALABRASRAPIDASMD.mp4" type="video/mp4">
-    Your browser does not support video files.
+    Your browser does not support video. / Tu navegador no soporta video.
   </video>
 </div>
 
