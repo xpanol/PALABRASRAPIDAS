@@ -7,21 +7,21 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
   background: #000;
-  overflow: hidden;
   font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
-/* GRID: 2 RZĘDY PO 3 VIDEO */
+/* GRID 2x3 */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 5px;
   width: 100vw;
   height: 100vh;
+  gap: 5px;
   box-sizing: border-box;
 }
 
@@ -30,14 +30,18 @@ html, body {
   position: relative;
   width: 100%;
   height: 100%;
+  max-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-video {
-  width: 100%;
+.video-box video {
+  width: auto;
   height: 100%;
+  max-height: 100%;
   object-fit: contain;
   background: #000;
-  display: block;
 }
 
 /* PLAY BUTTON */
@@ -73,29 +77,49 @@ video {
 <body>
 
 <div class="video-grid">
-  <div class="video-box"><video preload="metadata" playsinline src="videos/video1.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-box"><video preload="metadata" playsinline src="videos/video2.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-box"><video preload="metadata" playsinline src="videos/video3.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-box"><video preload="metadata" playsinline src="videos/video4.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-box"><video preload="metadata" playsinline src="videos/video5.mp4"></video><div class="play-overlay play"></div></div>
-  <div class="video-box"><video preload="metadata" playsinline src="videos/video6.mp4"></video><div class="play-overlay play"></div></div>
+  <div class="video-box">
+    <video preload="metadata" playsinline src="videos/video1.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+  <div class="video-box">
+    <video preload="metadata" playsinline src="videos/video2.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+  <div class="video-box">
+    <video preload="metadata" playsinline src="videos/video3.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+  <div class="video-box">
+    <video preload="metadata" playsinline src="videos/video4.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+  <div class="video-box">
+    <video preload="metadata" playsinline src="videos/video5.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
+  <div class="video-box">
+    <video preload="metadata" playsinline src="videos/video6.mp4"></video>
+    <div class="play-overlay play"></div>
+  </div>
 </div>
 
 <script>
 const boxes = document.querySelectorAll('.video-box');
 
-boxes.forEach(box=>{
+boxes.forEach(box => {
   const video = box.querySelector('video');
   const overlay = box.querySelector('.play-overlay');
 
-  // Miniaturka w Safari: pokazuje kadr z 2 sekundy
-  video.addEventListener('loadedmetadata',()=>{
-    if(video.duration>2){ video.currentTime=2; }
-    video.pause();
-    video.currentTime=0;
+  // Miniaturka w Safari: kadr z 2 sekundy
+  video.addEventListener('loadedmetadata', () => {
+    if(video.duration > 2) {
+      video.currentTime = 2;
+      video.pause();
+      video.currentTime = 0;
+    }
   });
 
-  overlay.addEventListener('click', e=>{
+  overlay.addEventListener('click', e => {
     e.stopPropagation();
     if(video.paused){
       video.play();
