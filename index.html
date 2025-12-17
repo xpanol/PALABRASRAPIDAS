@@ -10,13 +10,18 @@ body {
   font-family: Arial, sans-serif;
 }
 
+/* GRID: 2 RZĘDY PO 3 VIDEO */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 20px;
   padding: 20px;
+  height: 100vh;
+  box-sizing: border-box;
 }
 
+/* BOX VIDEO */
 .video-box {
   position: relative;
 }
@@ -32,31 +37,28 @@ video {
 <body>
 
 <div class="video-grid">
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video1.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video2.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video3.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video4.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video5.mp4"></video></div>
-  <div class="video-box"><video preload="metadata" playsinline controls src="videos_mp4/video6.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video1.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video2.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video3.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video4.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video5.mp4"></video></div>
+  <div class="video-box"><video preload="metadata" playsinline controls src="videos/video6.mp4"></video></div>
 </div>
 
 <script>
-// Wymuszamy pokazanie miniatur w Safari
+// Wymuszenie miniatur w Safari: kadr z 2 sekundy
 const videos = document.querySelectorAll('video');
 
 videos.forEach(v=>{
   v.addEventListener('loadedmetadata', ()=>{
-    // ustawiamy krótko na 2s i pauza, żeby wygenerować miniaturę
     if(v.duration > 2){
       v.currentTime = 2;
     }
     v.pause();
-    // wracamy na początek, ale Safari pamięta miniaturę
-    v.currentTime = 0;
+    v.currentTime = 0; // powrót na początek, Safari pamięta miniaturę
   });
 
-  // Zapobiegamy automatycznemu odtwarzaniu
-  v.pause();
+  v.pause(); // nie auto-play
 });
 </script>
 
