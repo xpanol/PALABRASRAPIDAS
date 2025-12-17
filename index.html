@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Videos del Xpanol</title>
+<title>Video Grid</title>
 
 <style>
 html, body {
@@ -19,7 +19,7 @@ html, body {
   width: 95vw;
   height: 95vh;
   margin: 0 auto;
-  padding: 20px 0; /* równa przestrzeń u góry i dołu */
+  padding: 20px 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -185,7 +185,7 @@ html, body {
 <div class="videos-container">
 
   <div class="video-wrapper">
-    <video src="videos/video1.mp4"></video>
+    <video src="videos/video1.mp4" playsinline muted></video>
     <div class="play-overlay play"></div>
     <div class="seek-btn left">◀</div>
     <div class="seek-btn right">▶</div>
@@ -193,7 +193,7 @@ html, body {
   </div>
 
   <div class="video-wrapper">
-    <video src="videos/video2.mp4"></video>
+    <video src="videos/video2.mp4" playsinline muted></video>
     <div class="play-overlay play"></div>
     <div class="seek-btn left">◀</div>
     <div class="seek-btn right">▶</div>
@@ -201,7 +201,7 @@ html, body {
   </div>
 
   <div class="video-wrapper">
-    <video src="videos/video3.mp4"></video>
+    <video src="videos/video3.mp4" playsinline muted></video>
     <div class="play-overlay play"></div>
     <div class="seek-btn left">◀</div>
     <div class="seek-btn right">▶</div>
@@ -209,7 +209,7 @@ html, body {
   </div>
 
   <div class="video-wrapper">
-    <video src="videos/video4.mp4"></video>
+    <video src="videos/video4.mp4" playsinline muted></video>
     <div class="play-overlay play"></div>
     <div class="seek-btn left">◀</div>
     <div class="seek-btn right">▶</div>
@@ -217,7 +217,7 @@ html, body {
   </div>
 
   <div class="video-wrapper">
-    <video src="videos/video5.mp4"></video>
+    <video src="videos/video5.mp4" playsinline muted></video>
     <div class="play-overlay play"></div>
     <div class="seek-btn left">◀</div>
     <div class="seek-btn right">▶</div>
@@ -225,7 +225,7 @@ html, body {
   </div>
 
   <div class="video-wrapper">
-    <video src="videos/video6.mp4"></video>
+    <video src="videos/video6.mp4" playsinline muted></video>
     <div class="play-overlay play"></div>
     <div class="seek-btn left">◀</div>
     <div class="seek-btn right">▶</div>
@@ -246,6 +246,7 @@ wrappers.forEach(w => {
   const temp = document.createElement('video');
   temp.src = v.src;
   temp.muted = true;
+  temp.playsInline = true;
   temp.preload = 'metadata';
   temp.addEventListener('loadedmetadata', () => {
     const snapTime = Math.min(2, temp.duration);
