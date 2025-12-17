@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>TikTok Grid with Active Video & ESC</title>
+<title>TikTok Grid with Hover Controls & ESC</title>
 <style>
 html, body {
   margin: 0;
@@ -46,6 +46,7 @@ video {
   transition: transform 0.5s ease, filter 0.5s ease, opacity 0.5s ease;
 }
 
+/* overlay Play/Pause */
 .play-overlay {
   position: absolute;
   top: 50%;
@@ -78,6 +79,15 @@ video {
   height: 20px;
   border-left: 5px solid #F8AC10;
   border-right: 5px solid #F8AC10;
+}
+
+/* pauza pojawia się tylko na hover dla aktywnego wideo */
+.video-wrapper.active .play-overlay {
+  display: none;
+}
+.video-wrapper.active:hover .play-overlay {
+  display: flex;
+  opacity: 1;
 }
 
 .video-wrapper.active {
@@ -261,7 +271,7 @@ function deactivateActiveVideo() {
     wrappers.forEach(w => {
       w.classList.remove('inactive');
       const overlay = w.querySelector('.play-overlay');
-      overlay.style.display = 'flex'; // przywrócenie przycisków miniatur
+      overlay.style.display = 'flex';
       overlay.classList.remove('pause');
       overlay.classList.add('play');
     });
@@ -278,7 +288,6 @@ wrappers.forEach(wrapper => {
       video.pause();
       overlay.classList.remove('pause');
       overlay.classList.add('play');
-      overlay.style.display = 'flex';
       wrapper.classList.remove('active');
       removeControls(wrapper);
       removeProgress(wrapper);
@@ -290,7 +299,6 @@ wrappers.forEach(wrapper => {
       video.play();
       overlay.classList.remove('play');
       overlay.classList.add('pause');
-      overlay.style.opacity = '1';
       wrapper.classList.add('active');
       addControls(wrapper, video);
       addProgressBar(wrapper, video);
