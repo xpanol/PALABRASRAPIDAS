@@ -2,40 +2,40 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Vertical Videos Grid Focus</title>
+<title>Vertical Videos Grid Full Screen</title>
 <style>
-body {
+html, body {
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  height: 100%;
   background: #000;
   display: flex;
   justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 .videos-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+  gap: 10px;
   width: 100%;
   max-width: 1200px;
-  position: relative;
+  height: 100%;
 }
 
 .video-wrapper {
   position: relative;
-  flex: 1 1 calc(33.333% - 13.33px);
-  max-width: 400px;
+  flex: 1 1 calc(33.333% - 6.66px);
+  height: calc(50% - 5px); /* 2 rzędy na ekranie */
   transition: transform 0.4s ease, z-index 0.4s ease;
-  cursor: pointer;
 }
 
 video {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 8px;
   transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
@@ -45,8 +45,8 @@ video {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 50%;
   display: flex;
@@ -54,54 +54,48 @@ video {
   align-items: center;
   cursor: pointer;
   z-index: 10;
-  transition: background 0.3s;
-}
-
-.play-overlay:hover {
-  background: rgba(255, 255, 255, 0.9);
 }
 
 .play-overlay.play::after {
   content: '';
   width: 0;
   height: 0;
-  border-left: 25px solid #F8AC10;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
+  border-left: 20px solid #F8AC10;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
 }
 
 .play-overlay.pause::after {
   content: '';
-  width: 16px;
-  height: 24px;
-  border-left: 6px solid #F8AC10;
-  border-right: 6px solid #F8AC10;
+  width: 14px;
+  height: 20px;
+  border-left: 5px solid #F8AC10;
+  border-right: 5px solid #F8AC10;
 }
 
 /* efekt aktywnego wideo */
 .video-wrapper.active {
-  flex: 1 1 100%;
-  max-width: 90%;
+  flex: 1 1 calc(33.333% - 6.66px);
+  height: calc(50% - 5px);
   z-index: 100;
+  transform: scale(1.05);
 }
 
 .video-wrapper.inactive video {
-  opacity: 0.5; /* ciemniejsze w tle */
+  opacity: 0.5;
 }
 
 @media (max-width: 900px) {
   .video-wrapper {
-    flex: 1 1 calc(50% - 10px);
-    max-width: 100%;
-  }
-  .video-wrapper.active {
-    flex: 1 1 100%;
+    flex: 1 1 calc(50% - 5px);
+    height: calc(50% - 5px);
   }
 }
 
 @media (max-width: 600px) {
   .video-wrapper {
     flex: 1 1 100%;
+    height: calc(50% - 5px);
   }
 }
 </style>
@@ -110,35 +104,12 @@ video {
 
 <div class="videos-container">
 
-  <div class="video-wrapper">
-    <video src="video1.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="video2.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="video3.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="video4.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="video5.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="video6.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
+  <div class="video-wrapper"><video src="video1.mp4"></video><div class="play-overlay play"></div></div>
+  <div class="video-wrapper"><video src="video2.mp4"></video><div class="play-overlay play"></div></div>
+  <div class="video-wrapper"><video src="video3.mp4"></video><div class="play-overlay play"></div></div>
+  <div class="video-wrapper"><video src="video4.mp4"></video><div class="play-overlay play"></div></div>
+  <div class="video-wrapper"><video src="video5.mp4"></video><div class="play-overlay play"></div></div>
+  <div class="video-wrapper"><video src="video6.mp4"></video><div class="play-overlay play"></div></div>
 
 </div>
 
@@ -190,7 +161,6 @@ wrappers.forEach(wrapper => {
       overlay.classList.add('pause');
       overlay.style.display = 'none';
       wrapper.classList.add('active');
-      wrapper.scrollIntoView({behavior: "smooth", block: "center"});
     }
   }
 
