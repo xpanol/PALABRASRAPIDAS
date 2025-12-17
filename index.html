@@ -2,15 +2,17 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>XPANOL Videos</title>
+<title>XPANOL Video Grid</title>
 
 <style>
-body{
+html,body{
   margin:0;
+  padding:0;
   background:#000;
   font-family:Arial, sans-serif;
 }
 
+/* GRID */
 .video-grid{
   display:grid;
   grid-template-columns:repeat(3, 1fr);
@@ -18,11 +20,12 @@ body{
   padding:20px;
 }
 
+/* BOX */
 .video-box{
   position:relative;
-  background:#000;
 }
 
+/* VIDEO */
 video{
   width:100%;
   height:auto;
@@ -30,36 +33,18 @@ video{
   background:#000;
 }
 
-/* przycisk PLAY */
-.play-btn{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-  width:64px;
-  height:64px;
-  border-radius:50%;
-  background:rgba(0,0,0,0.7);
-  color:#fff;
-  font-size:32px;
-  border:none;
-  cursor:pointer;
-  z-index:10;
+/* DOMYŚLNIE: TYLKO PLAY (Safari) */
+.video-box:not(.active) video::-webkit-media-controls-timeline,
+.video-box:not(.active) video::-webkit-media-controls-current-time-display,
+.video-box:not(.active) video::-webkit-media-controls-time-remaining-display,
+.video-box:not(.active) video::-webkit-media-controls-volume-slider,
+.video-box:not(.active) video::-webkit-media-controls-fullscreen-button{
+  display:none !important;
 }
 
-/* domyślnie brak kontrolek */
-video{
-  pointer-events:none;
-}
-
-/* aktywne video */
-.video-box.active video{
-  pointer-events:auto;
-}
-
-/* ukryj play po starcie */
-.video-box.active .play-btn{
-  display:none;
+/* AKTYWNE VIDEO: PEŁNE KONTROLKI */
+.video-box.active video::-webkit-media-controls{
+  display:flex !important;
 }
 </style>
 </head>
@@ -69,45 +54,39 @@ video{
 <div class="video-grid">
 
   <div class="video-box">
-    <video preload="metadata" playsinline muted>
+    <video preload="metadata" playsinline controls>
       <source src="videos_mp4/video1.mp4" type="video/mp4">
     </video>
-    <button class="play-btn">▶</button>
   </div>
 
   <div class="video-box">
-    <video preload="metadata" playsinline muted>
+    <video preload="metadata" playsinline controls>
       <source src="videos_mp4/video2.mp4" type="video/mp4">
     </video>
-    <button class="play-btn">▶</button>
   </div>
 
   <div class="video-box">
-    <video preload="metadata" playsinline muted>
+    <video preload="metadata" playsinline controls>
       <source src="videos_mp4/video3.mp4" type="video/mp4">
     </video>
-    <button class="play-btn">▶</button>
   </div>
 
   <div class="video-box">
-    <video preload="metadata" playsinline muted>
+    <video preload="metadata" playsinline controls>
       <source src="videos_mp4/video4.mp4" type="video/mp4">
     </video>
-    <button class="play-btn">▶</button>
   </div>
 
   <div class="video-box">
-    <video preload="metadata" playsinline muted>
+    <video preload="metadata" playsinline controls>
       <source src="videos_mp4/video5.mp4" type="video/mp4">
     </video>
-    <button class="play-btn">▶</button>
   </div>
 
   <div class="video-box">
-    <video preload="metadata" playsinline muted>
+    <video preload="metadata" playsinline controls>
       <source src="videos_mp4/video6.mp4" type="video/mp4">
     </video>
-    <button class="play-btn">▶</button>
   </div>
 
 </div>
@@ -117,23 +96,25 @@ const boxes = document.querySelectorAll('.video-box');
 
 boxes.forEach(box=>{
   const video = box.querySelector('video');
-  const playBtn = box.querySelector('.play-btn');
 
-  playBtn.addEventListener('click', ()=>{
-    boxes.forEach(b=>{
-      const v = b.querySelector('video');
-      v.pause();
-      v.removeAttribute('controls');
-      b.classList.remove('active');
+  video.addEventListener('play', ()=>{
+    boxes.forEach(other=>{
+      const v = other.querySelector('video');
+      if(other !== box){
+        v.pause();
+        other.classList.remove('active');
+      }
     });
-
     box.classList.add('active');
-    video.setAttribute('controls','controls');
-    video.play();
+  });
+
+  video.addEventListener('pause', ()=>{
+    if(!video.ended){
+      box.classList.add('active');
+    }
   });
 
   video.addEventListener('ended', ()=>{
-    video.removeAttribute('controls');
     box.classList.remove('active');
   });
 });
