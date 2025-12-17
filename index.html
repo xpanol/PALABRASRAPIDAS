@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Video Grid</title>
+<title>Video Grid Safari Friendly</title>
 <style>
 html, body {
   margin: 0;
@@ -41,7 +41,6 @@ html, body {
   height: 100%;
   object-fit: contain;
   display: block;
-  pointer-events: none;
 }
 
 .video-wrapper.inactive video {
@@ -56,7 +55,6 @@ html, body {
   height: 90%;
   transform: translate(-50%, -50%);
   z-index: 100;
-  pointer-events: auto;
 }
 
 .play-overlay {
@@ -70,7 +68,6 @@ html, body {
   align-items: center;
   cursor: pointer;
   z-index: 200;
-  pointer-events: auto;
 }
 
 .play-overlay.play::after {
@@ -142,19 +139,19 @@ html, body {
 <body>
 
 <div class="videos-container">
-  <div class="video-wrapper"><video src="videos/video1.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video2.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video3.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video4.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video5.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video6.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video1.mp4" playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video2.mp4" playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video3.mp4" playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video4.mp4" playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video5.mp4" playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video6.mp4" playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
 </div>
 
 <script>
 const wrappers=document.querySelectorAll('.video-wrapper');
 let activeWrapper=null;
 
-function resetButtons() {
+function resetButtons(){
   wrappers.forEach(w=>{
     w.querySelector('.seek-btn.left').style.display='none';
     w.querySelector('.seek-btn.right').style.display='none';
@@ -191,18 +188,15 @@ wrappers.forEach(w=>{
   const right=w.querySelector('.seek-btn.right');
   const close=w.querySelector('.close-btn');
 
-  // miniaturka play
   overlay.onclick=e=>{
     e.stopPropagation();
     if(!activeWrapper){
       wrappers.forEach(x=>{if(x!==w)x.classList.add('inactive');});
       w.classList.add('active');
       activeWrapper=w;
-      v.muted=false;
       v.play();
       overlay.classList.replace('play','pause');
 
-      // aktywne przyciski tylko dla tego video
       overlay.style.display='flex';
       left.style.display='flex';
       right.style.display='flex';
@@ -230,5 +224,6 @@ wrappers.forEach(w=>{
 
 document.addEventListener('keydown', e=>{if(e.key==='Escape') closeActiveVideo();});
 </script>
+
 </body>
 </html>
