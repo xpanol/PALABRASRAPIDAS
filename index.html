@@ -13,10 +13,10 @@ html, body {margin:0; padding:0; width:100%; height:100%; background:#000; font-
 .play-overlay {position:absolute; width:64px; height:64px; background:rgba(255,255,255,0.7); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:200; pointer-events:auto;}
 .play-overlay.play::after {content:""; border-left:22px solid #F8AC10; border-top:14px solid transparent; border-bottom:14px solid transparent;}
 .play-overlay.pause::after {content:""; width:18px; height:22px; border-left:6px solid #F8AC10; border-right:6px solid #F8AC10;}
-.seek-btn, .close-btn {position:absolute; top:50%; width:48px; height:48px; background:rgba(255,255,255,0.7); border-radius:50%; display:none; justify-content:center; align-items:center; font-size:22px; color:#F8AC10; cursor:pointer; z-index:200;}
-.seek-btn.left {left:14px; top:50%;}
-.seek-btn.right {right:14px; top:50%;}
-.close-btn {top:12px; right:12px; width:36px; height:36px; font-size:22px;}
+.seek-btn {position:absolute; top:50%; width:48px; height:48px; background:rgba(255,255,255,0.7); border-radius:50%; display:none; justify-content:center; align-items:center; font-size:22px; color:#F8AC10; cursor:pointer; z-index:200;}
+.seek-btn.left {left:14px;}
+.seek-btn.right {right:14px;}
+.close-btn {position:absolute; top:12px; right:12px; width:36px; height:36px; background:rgba(255,255,255,0.75); border-radius:50%; display:none; justify-content:center; align-items:center; font-size:22px; cursor:pointer; z-index:200;}
 .progress-bar-container {position:absolute; bottom:10px; left:10px; right:10px; height:6px; background:rgba(255,255,255,0.3); border-radius:3px; cursor:pointer; z-index:200;}
 .progress-bar {height:100%; width:0%; background:#F8AC10; border-radius:3px;}
 @media(max-width:900px){.videos-container{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);}.video-wrapper.active{width:90%;height:85%;}}
@@ -38,26 +38,26 @@ const container=document.querySelector('.videos-container');
 const wrappers=document.querySelectorAll('.video-wrapper');
 let activeWrapper=null;
 
-// wymuszenie miniatur w Safari
+// wymuszanie pokazania miniatur w Safari
 wrappers.forEach(w=>{
   const v=w.querySelector('video');
-  v.currentTime=0.01;
+  v.currentTime = 0.01;
   v.pause();
 });
 
 function closeActiveVideo(){
-  if(!activeWrapper)return;
+  if(!activeWrapper) return;
   activeWrapper.querySelector('video').pause();
   container.classList.remove('has-active');
   wrappers.forEach(w=>{
     w.classList.remove('active','inactive');
     w.querySelector('.play-overlay').className='play-overlay play';
     w.querySelectorAll('.progress-bar-container').forEach(p=>p.remove());
-    // przywróć przyciski play wszystkim miniaturkom
+    // pokazujemy przyciski ponownie dla wszystkich
     w.querySelector('.play-overlay').style.display='flex';
-    w.querySelector('.seek-btn.left').style.display='none';
-    w.querySelector('.seek-btn.right').style.display='none';
-    w.querySelector('.close-btn').style.display='none';
+    w.querySelector('.seek-btn.left').style.display='flex';
+    w.querySelector('.seek-btn.right').style.display='flex';
+    w.querySelector('.close-btn').style.display='flex';
   });
   activeWrapper=null;
 }
@@ -88,21 +88,21 @@ wrappers.forEach(w=>{
       v.play();
       overlay.classList.replace('play','pause');
 
-      // widoczne tylko przyciski aktywnego wideo
+      // pokazujemy tylko przyciski aktywnego wideo
+      overlay.style.display='flex';
       left.style.display='flex';
       right.style.display='flex';
       close.style.display='flex';
       wrappers.forEach(x=>{
         if(x!==w){
+          x.querySelector('.play-overlay').style.display='none';
           x.querySelector('.seek-btn.left').style.display='none';
           x.querySelector('.seek-btn.right').style.display='none';
           x.querySelector('.close-btn').style.display='none';
-          // przyciski play zawsze widoczne
-          x.querySelector('.play-overlay').style.display='flex';
         }
       });
-      addProgress(w,v);
 
+      addProgress(w,v);
     } else if(activeWrapper===w){
       if(v.paused){v.play(); overlay.classList.replace('play','pause');}
       else{v.pause(); overlay.classList.replace('pause','play');}
