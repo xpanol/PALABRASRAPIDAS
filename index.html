@@ -14,7 +14,7 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
-/* GRID 2x3, wypełnia ekran */
+/* GRID: 2 RZĘDY PO 3 VIDEO */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -68,7 +68,6 @@ video {
   border-left: 6px solid #F8AC10;
   border-right: 6px solid #F8AC10;
 }
-
 </style>
 </head>
 <body>
@@ -89,7 +88,7 @@ boxes.forEach(box=>{
   const video = box.querySelector('video');
   const overlay = box.querySelector('.play-overlay');
 
-  // Miniaturka w Safari: 2 sekundy
+  // Miniaturka w Safari: pokazuje kadr z 2 sekundy
   video.addEventListener('loadedmetadata',()=>{
     if(video.duration>2){ video.currentTime=2; }
     video.pause();
