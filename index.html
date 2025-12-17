@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Video Grid</title>
+<title>Videos del Xpanol</title>
 
 <style>
 html, body {
@@ -18,7 +18,8 @@ html, body {
 .videos-container {
   width: 95vw;
   height: 95vh;
-  margin: auto;
+  margin: 0 auto;
+  padding: 20px 0; /* równa przestrzeń u góry i dołu */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -85,7 +86,6 @@ html, body {
   border-right: 6px solid #F8AC10;
 }
 
-/* overlay aktywnego wideo tylko na hover */
 .video-wrapper.active .play-overlay {
   opacity: 0;
   pointer-events: none;
@@ -243,7 +243,6 @@ let activeWrapper = null;
 wrappers.forEach(w => {
   const v = w.querySelector('video');
 
-  // Tworzymy tymczasowe wideo do snapshot
   const temp = document.createElement('video');
   temp.src = v.src;
   temp.muted = true;
