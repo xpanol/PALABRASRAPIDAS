@@ -2,12 +2,12 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Video Grid Play Buttons Visible</title>
+<title>Video Grid Safari Friendly</title>
 <style>
 html, body {margin:0; padding:0; width:100%; height:100%; background:#000; font-family:sans-serif;}
 .videos-container {width:95vw; height:95vh; margin:0 auto; padding:20px 0; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:12px; position:relative;}
-.video-wrapper {position:relative; border-radius:12px; overflow:hidden; display:flex; justify-content:center; align-items:center;}
-.video-wrapper video {width:100%; height:100%; object-fit:contain; background:#000; display:block; pointer-events:none;}
+.video-wrapper {position:relative; border-radius:12px; overflow:hidden; display:flex; justify-content:center; align-items:center; background:#000;}
+.video-wrapper video {width:100%; height:100%; object-fit:contain; display:block; pointer-events:none;}
 .video-wrapper.inactive video {filter: blur(4px) brightness(0.35);}
 .video-wrapper.active {position:absolute; top:50%; left:50%; width:66%; height:90%; transform:translate(-50%,-50%); z-index:100; pointer-events:auto;}
 .play-overlay {position:absolute; width:64px; height:64px; background:rgba(255,255,255,0.7); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:200; pointer-events:auto;}
@@ -27,12 +27,12 @@ html, body {margin:0; padding:0; width:100%; height:100%; background:#000; font-
 <body>
 
 <div class="videos-container">
-  <div class="video-wrapper"><video src="videos/video1.mp4" preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video2.mp4" preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video3.mp4" preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video4.mp4" preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video5.mp4" preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
-  <div class="video-wrapper"><video src="videos/video6.mp4" preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video1.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video2.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video3.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video4.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video5.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
+  <div class="video-wrapper"><video src="videos/video6.mp4" muted playsinline preload="metadata"></video><div class="play-overlay play"></div><div class="seek-btn left">◀</div><div class="seek-btn right">▶</div><div class="close-btn">✕</div></div>
 </div>
 
 <script>
