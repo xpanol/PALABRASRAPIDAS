@@ -2,109 +2,131 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
+<title>Video Grid Safari Safe</title>
 
 <style>
-body {
+html, body {
   margin: 0;
-  background: black;
+  padding: 0;
+  background: #000;
 }
 
-.grid {
+.videos-container {
+  width: 95vw;
+  height: 95vh;
+  margin: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding: 40px;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 16px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.video-box {
+.video-wrapper {
   position: relative;
+  background: black;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-video {
+.video-wrapper video {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
   background: black;
   display: block;
 }
 
-.play {
+.play-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 60px;
-  color: white;
+  font-size: 56px;
+  color: #F8AC10;
   background: rgba(0,0,0,0.25);
   cursor: pointer;
+}
+
+.video-wrapper.playing .play-overlay {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .videos-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="grid">
+<div class="videos-container">
 
-  <div class="video-box">
-    <video preload="metadata">
+  <div class="video-wrapper">
+    <video muted playsinline preload="metadata">
       <source src="videos/video1.mp4" type="video/mp4">
     </video>
-    <div class="play">▶</div>
+    <div class="play-overlay">▶</div>
   </div>
 
-  <div class="video-box">
-    <video preload="metadata">
+  <div class="video-wrapper">
+    <video muted playsinline preload="metadata">
       <source src="videos/video2.mp4" type="video/mp4">
     </video>
-    <div class="play">▶</div>
+    <div class="play-overlay">▶</div>
   </div>
 
-  <div class="video-box">
-    <video preload="metadata">
+  <div class="video-wrapper">
+    <video muted playsinline preload="metadata">
       <source src="videos/video3.mp4" type="video/mp4">
     </video>
-    <div class="play">▶</div>
+    <div class="play-overlay">▶</div>
   </div>
 
-  <div class="video-box">
-    <video preload="metadata">
+  <div class="video-wrapper">
+    <video muted playsinline preload="metadata">
       <source src="videos/video4.mp4" type="video/mp4">
     </video>
-    <div class="play">▶</div>
+    <div class="play-overlay">▶</div>
   </div>
 
-  <div class="video-box">
-    <video preload="metadata">
+  <div class="video-wrapper">
+    <video muted playsinline preload="metadata">
       <source src="videos/video5.mp4" type="video/mp4">
     </video>
-    <div class="play">▶</div>
+    <div class="play-overlay">▶</div>
   </div>
 
-  <div class="video-box">
-    <video preload="metadata">
+  <div class="video-wrapper">
+    <video muted playsinline preload="metadata">
       <source src="videos/video6.mp4" type="video/mp4">
     </video>
-    <div class="play">▶</div>
+    <div class="play-overlay">▶</div>
   </div>
 
 </div>
 
 <script>
-document.querySelectorAll('.video-box').forEach(box => {
-  const video = box.querySelector('video');
-  const play = box.querySelector('.play');
+document.querySelectorAll('.video-wrapper').forEach(wrap => {
+  const video = wrap.querySelector('video');
+  const play = wrap.querySelector('.play-overlay');
 
   play.addEventListener('click', () => {
     video.play();
-    play.style.display = 'none';
+    wrap.classList.add('playing');
   });
 
   video.addEventListener('pause', () => {
-    play.style.display = 'flex';
+    wrap.classList.remove('playing');
   });
 
   video.addEventListener('ended', () => {
-    play.style.display = 'flex';
+    wrap.classList.remove('playing');
   });
 });
 </script>
