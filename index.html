@@ -2,41 +2,47 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Vertical Videos Grid Full Screen</title>
+<title>TikTok Style Video Grid</title>
 <style>
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   background: #000;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
 }
 
 .videos-container {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 10px;
-  width: 100%;
+  width: 95vw;
+  height: 95vh;
   max-width: 1200px;
-  height: 100%;
+  max-height: 100vh;
+  position: relative;
 }
 
 .video-wrapper {
   position: relative;
-  flex: 1 1 calc(33.333% - 6.66px);
-  height: calc(50% - 5px); /* 2 rzędy na ekranie */
-  transition: transform 0.4s ease, z-index 0.4s ease;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.5s ease, z-index 0.5s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-  transition: transform 0.4s ease, opacity 0.4s ease;
+  object-fit: contain; /* zachowuje proporcje, nie przycina */
+  transition: transform 0.5s ease, filter 0.5s ease, opacity 0.5s ease;
 }
 
 /* overlay Play/Pause */
@@ -47,7 +53,7 @@ video {
   transform: translate(-50%, -50%);
   width: 60px;
   height: 60px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255,255,255,0.7);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -73,29 +79,43 @@ video {
   border-right: 5px solid #F8AC10;
 }
 
-/* efekt aktywnego wideo */
+/* aktywne wideo powiększone 2x */
 .video-wrapper.active {
-  flex: 1 1 calc(33.333% - 6.66px);
-  height: calc(50% - 5px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(2 * (100% / 3) - 10px);
+  height: calc(2 * (100% / 2) - 10px);
+  transform: translate(-50%, -50%);
   z-index: 100;
-  transform: scale(1.05);
 }
 
+/* pozostałe w tle */
 .video-wrapper.inactive video {
-  opacity: 0.5;
+  filter: brightness(0.3) blur(4px);
+  pointer-events: none;
 }
 
+/* responsywność */
 @media (max-width: 900px) {
-  .video-wrapper {
-    flex: 1 1 calc(50% - 5px);
-    height: calc(50% - 5px);
+  .videos-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .video-wrapper.active {
+    width: calc(2 * (100% / 2) - 10px);
+    height: calc(2 * (100% / 3) - 10px);
   }
 }
 
 @media (max-width: 600px) {
-  .video-wrapper {
-    flex: 1 1 100%;
-    height: calc(50% - 5px);
+  .videos-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 1fr);
+  }
+  .video-wrapper.active {
+    width: 90%;
+    height: auto;
   }
 }
 </style>
@@ -103,14 +123,12 @@ video {
 <body>
 
 <div class="videos-container">
-
   <div class="video-wrapper"><video src="video1.mp4"></video><div class="play-overlay play"></div></div>
   <div class="video-wrapper"><video src="video2.mp4"></video><div class="play-overlay play"></div></div>
   <div class="video-wrapper"><video src="video3.mp4"></video><div class="play-overlay play"></div></div>
   <div class="video-wrapper"><video src="video4.mp4"></video><div class="play-overlay play"></div></div>
   <div class="video-wrapper"><video src="video5.mp4"></video><div class="play-overlay play"></div></div>
   <div class="video-wrapper"><video src="video6.mp4"></video><div class="play-overlay play"></div></div>
-
 </div>
 
 <script>
@@ -120,7 +138,7 @@ function stopAllExcept(currentVideo) {
   wrappers.forEach(wrapper => {
     const video = wrapper.querySelector('video');
     const overlay = wrapper.querySelector('.play-overlay');
-    if (video !== currentVideo) {
+    if(video !== currentVideo) {
       video.pause();
       overlay.style.display = 'flex';
       overlay.classList.remove('pause');
@@ -133,11 +151,8 @@ function stopAllExcept(currentVideo) {
 
 function setInactiveExcept(currentWrapper) {
   wrappers.forEach(wrapper => {
-    if (wrapper !== currentWrapper) {
-      wrapper.classList.add('inactive');
-    } else {
-      wrapper.classList.remove('inactive');
-    }
+    if(wrapper !== currentWrapper) wrapper.classList.add('inactive');
+    else wrapper.classList.remove('inactive');
   });
 }
 
@@ -146,7 +161,7 @@ wrappers.forEach(wrapper => {
   const overlay = wrapper.querySelector('.play-overlay');
 
   function toggleVideo() {
-    if (!video.paused) {
+    if(!video.paused){
       video.pause();
       overlay.classList.remove('pause');
       overlay.classList.add('play');
