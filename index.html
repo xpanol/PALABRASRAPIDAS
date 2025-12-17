@@ -6,319 +6,255 @@
 
 <style>
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  overflow: hidden;
-  font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #000;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
 }
 
-.videos-container {
-  width: 95vw;
-  height: 95vh;
-  margin: auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 12px;
-  position: relative;
+#grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 16px;
+    padding: 16px;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
-.video-wrapper {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.video-box {
+    position: relative;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
 }
 
-.video-wrapper video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #000;
+.video-box video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
 }
 
-.video-wrapper.inactive video {
-  filter: blur(4px) brightness(0.35);
+.play-btn {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: white;
+    background: rgba(0,0,0,0.3);
 }
 
-.video-wrapper.active {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 66%;
-  height: 90%;
-  transform: translate(-50%, -50%);
-  z-index: 100;
+.active-mode #grid .video-box:not(.active) {
+    filter: blur(6px) brightness(0.4);
+    pointer-events: none;
 }
 
-/* PLAY / PAUSE */
-.play-overlay {
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 30;
+.active-mode #grid {
+    position: relative;
 }
 
-.play-overlay.play::after {
-  content: "";
-  border-left: 22px solid #F8AC10;
-  border-top: 14px solid transparent;
-  border-bottom: 14px solid transparent;
+.video-box.active {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.play-overlay.pause::after {
-  content: "";
-  width: 18px;
-  height: 22px;
-  border-left: 6px solid #F8AC10;
-  border-right: 6px solid #F8AC10;
+.video-box.active video {
+    width: auto;
+    height: 90vh;
 }
 
-.video-wrapper.active .play-overlay {
-  opacity: 0;
-  pointer-events: none;
+.video-box.active .play-btn {
+    display: none;
 }
 
-.video-wrapper.active:hover .play-overlay {
-  opacity: 1;
-  pointer-events: auto;
+.controls {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
-/* PRZEWIJANIE */
-.seek-btn {
-  position: absolute;
-  top: 50%;
-  width: 48px;
-  height: 48px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 50%;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  color: #F8AC10;
-  cursor: pointer;
-  z-index: 35;
+.video-box.active:hover .controls {
+    opacity: 1;
 }
 
-.seek-btn.left { left: 14px; }
-.seek-btn.right { right: 14px; }
-
-.video-wrapper.active:hover .seek-btn {
-  display: flex;
+.control-btn {
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    font-size: 18px;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
-/* CLOSE */
+.progress {
+    position: absolute;
+    bottom: 10px;
+    left: 10%;
+    width: 80%;
+}
+
 .close-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  background: rgba(255,255,255,0.75);
-  border-radius: 50%;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  cursor: pointer;
-  z-index: 40;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    opacity: 0;
 }
 
-.video-wrapper.active .close-btn {
-  display: flex;
-}
-
-/* PROGRESS */
-.progress-bar-container {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  height: 6px;
-  background: rgba(255,255,255,0.3);
-  border-radius: 3px;
-  cursor: pointer;
-  z-index: 30;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: #F8AC10;
-  border-radius: 3px;
-}
-
-@media (max-width: 900px) {
-  .videos-container {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-  }
-  .video-wrapper.active {
-    width: 90%;
-    height: 85%;
-  }
+.video-box.active:hover .close-btn {
+    opacity: 1;
 }
 </style>
 </head>
 
 <body>
 
-<div class="videos-container">
-
-  <!-- POWIEL TEN BLOK 6x -->
-  <div class="video-wrapper">
-    <video src="videos/video1.mp4"></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video2.mp4"></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video3.mp4"></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video4.mp4"></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video5.mp4"></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
-  <div class="video-wrapper">
-    <video src="videos/video6.mp4"></video>
-    <div class="play-overlay play"></div>
-    <div class="seek-btn left">◀</div>
-    <div class="seek-btn right">▶</div>
-    <div class="close-btn">✕</div>
-  </div>
-
+<div id="grid">
+    <div class="video-box">
+        <video src="videos/video1.mp4"></video>
+        <div class="play-btn">▶</div>
+    </div>
+    <div class="video-box">
+        <video src="videos/video2.mp4"></video>
+        <div class="play-btn">▶</div>
+    </div>
+    <div class="video-box">
+        <video src="videos/video3.mp4"></video>
+        <div class="play-btn">▶</div>
+    </div>
+    <div class="video-box">
+        <video src="videos/video4.mp4"></video>
+        <div class="play-btn">▶</div>
+    </div>
+    <div class="video-box">
+        <video src="videos/video5.mp4"></video>
+        <div class="play-btn">▶</div>
+    </div>
+    <div class="video-box">
+        <video src="videos/video6.mp4"></video>
+        <div class="play-btn">▶</div>
+    </div>
 </div>
 
 <script>
-const wrappers = document.querySelectorAll('.video-wrapper');
-let activeWrapper = null;
+const boxes = document.querySelectorAll('.video-box');
+let activeBox = null;
 
-function closeActiveVideo() {
-  if(!activeWrapper) return;
-  activeWrapper.querySelector('video').pause();
+boxes.forEach(box => {
+    const video = box.querySelector('video');
 
-  wrappers.forEach(w => {
-    w.classList.remove('active','inactive');
-    const o = w.querySelector('.play-overlay');
-    o.className = 'play-overlay play';
-    removeProgress(w);
-  });
+    box.addEventListener('click', () => {
+        if (activeBox) return;
 
-  activeWrapper = null;
-}
+        activeBox = box;
+        document.body.classList.add('active-mode');
+        box.classList.add('active');
 
-function removeProgress(w) {
-  w.querySelectorAll('.progress-bar-container').forEach(p => p.remove());
-}
-
-function addProgress(w, v) {
-  removeProgress(w);
-  const c = document.createElement('div');
-  c.className = 'progress-bar-container';
-  const b = document.createElement('div');
-  b.className = 'progress-bar';
-  c.appendChild(b);
-  w.appendChild(c);
-
-  c.onclick = e => {
-    const r = c.getBoundingClientRect();
-    v.currentTime = ((e.clientX - r.left) / r.width) * v.duration;
-  };
-
-  v.addEventListener('timeupdate', () => {
-    b.style.width = (v.currentTime / v.duration * 100) + '%';
-  });
-}
-
-wrappers.forEach(w => {
-  const v = w.querySelector('video');
-  const overlay = w.querySelector('.play-overlay');
-  const left = w.querySelector('.seek-btn.left');
-  const right = w.querySelector('.seek-btn.right');
-  const close = w.querySelector('.close-btn');
-
-  overlay.onclick = e => {
-    e.stopPropagation();
-
-    if(!activeWrapper){
-      wrappers.forEach(x => { if(x !== w) x.classList.add('inactive'); });
-      w.classList.add('active');
-      activeWrapper = w;
-      v.play();
-      overlay.classList.replace('play','pause');
-      addProgress(w, v);
-    } else {
-      if(v.paused){
-        v.play();
-        overlay.classList.replace('play','pause');
-      } else {
-        v.pause();
-        overlay.classList.replace('pause','play');
-      }
-    }
-  };
-
-  v.onclick = () => {
-    if(activeWrapper === w) overlay.onclick(new Event('click'));
-  };
-
-  left.onclick = e => {
-    e.stopPropagation();
-    v.currentTime = Math.max(0, v.currentTime - 5);
-  };
-
-  right.onclick = e => {
-    e.stopPropagation();
-    v.currentTime = Math.min(v.duration, v.currentTime + 5);
-  };
-
-  close.onclick = e => {
-    e.stopPropagation();
-    closeActiveVideo();
-  };
+        addControls(box, video);
+        video.play();
+    });
 });
 
+function addControls(box, video) {
+    const controls = document.createElement('div');
+    controls.className = 'controls';
+
+    const back = document.createElement('button');
+    back.className = 'control-btn';
+    back.textContent = '⏪';
+    back.onclick = e => {
+        e.stopPropagation();
+        video.currentTime = Math.max(0, video.currentTime - 5);
+    };
+
+    const playPause = document.createElement('button');
+    playPause.className = 'control-btn';
+    playPause.textContent = '⏸';
+    playPause.onclick = e => {
+        e.stopPropagation();
+        if (video.paused) {
+            video.play();
+            playPause.textContent = '⏸';
+        } else {
+            video.pause();
+            playPause.textContent = '▶';
+        }
+    };
+
+    const forward = document.createElement('button');
+    forward.className = 'control-btn';
+    forward.textContent = '⏩';
+    forward.onclick = e => {
+        e.stopPropagation();
+        video.currentTime = Math.min(video.duration, video.currentTime + 5);
+    };
+
+    controls.append(back, playPause, forward);
+
+    const progress = document.createElement('input');
+    progress.type = 'range';
+    progress.className = 'progress';
+    progress.min = 0;
+    progress.max = 100;
+
+    video.addEventListener('timeupdate', () => {
+        progress.value = (video.currentTime / video.duration) * 100 || 0;
+    });
+
+    progress.oninput = e => {
+        e.stopPropagation();
+        video.currentTime = (progress.value / 100) * video.duration;
+    };
+
+    const close = document.createElement('button');
+    close.className = 'close-btn';
+    close.textContent = '✕';
+    close.onclick = e => {
+        e.stopPropagation();
+        exitActive();
+    };
+
+    box.append(controls, progress, close);
+}
+
+function exitActive() {
+    if (!activeBox) return;
+
+    const video = activeBox.querySelector('video');
+    video.pause();
+
+    activeBox.classList.remove('active');
+    activeBox.querySelectorAll('.controls, .progress, .close-btn').forEach(e => e.remove());
+
+    document.body.classList.remove('active-mode');
+    activeBox = null;
+}
+
 document.addEventListener('keydown', e => {
-  if(e.key === 'Escape') closeActiveVideo();
+    if (e.key === 'Escape') exitActive();
 });
 </script>
 
