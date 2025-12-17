@@ -2,15 +2,46 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>PALABRAS RÁPIDAS</title>
+<title>Video MP4</title>
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+}
+
+.video-wrapper {
+  width: 100%;
+  max-width: 720px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+</style>
+
 </head>
 <body>
 
-<video width="800" controls>
-  <source src="PALABRASRAPIDASMD.mp4" type="video/mp4">
-  Your browser does not support video files.
-</video>
+<div class="video-wrapper">
+  <video controls>
+    <source src="video.mp4" type="video/mp4">
+    Your browser does not support video files.
+  </video>
+</div>
 
 </body>
 </html>
-
