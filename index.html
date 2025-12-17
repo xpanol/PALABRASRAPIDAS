@@ -32,9 +32,10 @@ video {
   max-height: 80vh;
   display: block;
   object-fit: contain;
+  cursor: pointer;
 }
 
-/* overlay Play */
+/* overlay Play/Pause */
 .play-overlay {
   position: absolute;
   top: 50%;
@@ -42,15 +43,37 @@ video {
   transform: translate(-50%, -50%);
   width: 100px;
   height: 100px;
-  background: rgba(248, 172, 16, 0.9); /* żółty Xpanol */
-  clip-path: polygon(25% 20%, 25% 80%, 75% 50%); /* trójkąt w prawo */
+  background: rgba(255, 255, 255, 0.7); /* biały, półprzezroczysty okrąg */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   z-index: 10;
   transition: background 0.3s;
 }
 
 .play-overlay:hover {
-  background: rgba(248, 172, 16, 1);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* trójkąt Play */
+.play-overlay.play::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 30px solid #F8AC10; /* Xpanol trójkąt */
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+}
+
+/* symbol Pauzy */
+.play-overlay.pause::after {
+  content: '';
+  width: 20px;
+  height: 30px;
+  border-left: 8px solid #F8AC10;
+  border-right: 8px solid #F8AC10;
 }
 </style>
 
@@ -58,20 +81,45 @@ video {
 <body>
 
 <div class="video-wrapper">
-  <video id="myVideo" controls>
+  <video id="myVideo">
     <source src="PALABRASRAPIDASMD.mp4" type="video/mp4">
     Your browser does not support video. / Tu navegador no soporta video.
   </video>
-  <div class="play-overlay" id="playBtn"></div>
+  <div class="play-overlay play" id="playBtn"></div>
 </div>
 
 <script>
 const video = document.getElementById('myVideo');
-const btn = document.getElementById('playBtn');
+const overlay = document.getElementById('playBtn');
 
-btn.addEventListener('click', () => {
-  video.play();
-  btn.style.display = 'none'; // ukryj overlay po kliknięciu
+// funkcja toggle Play/Pause
+function toggleVideo() {
+  if (video.paused) {
+    video.play();
+    overlay.classList.remove('play');
+    overlay.classList.add('pause');
+  } else {
+    video.pause();
+    overlay.classList.remove('pause');
+    overlay.classList.add('play');
+  }
+}
+
+// kliknięcie na overlay
+overlay.addEventListener('click', toggleVideo);
+
+// kliknięcie w samo wideo
+video.addEventListener('click', toggleVideo);
+
+// ukryj overlay po pierwszym odtworzeniu, pokaż gdy pauza
+video.addEventListener('play', () => {
+  overlay.style.display = 'none';
+});
+
+video.addEventListener('pause', () => {
+  overlay.style.display = 'flex';
+  overlay.classList.remove('play');
+  overlay.classList.add('play');
 });
 </script>
 
