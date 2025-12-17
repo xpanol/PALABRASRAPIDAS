@@ -239,6 +239,15 @@ const container = document.querySelector('.videos-container');
 const wrappers = document.querySelectorAll('.video-wrapper');
 let activeWrapper = null;
 
+/* MINIATURKI Z 2 SEKUNDY */
+wrappers.forEach(w => {
+  const v = w.querySelector('video');
+  v.preload = 'metadata';
+  v.addEventListener('loadedmetadata', () => {
+    if(v.duration > 2) v.currentTime = 2;
+  });
+});
+
 function closeActiveVideo() {
   if(!activeWrapper) return;
 
