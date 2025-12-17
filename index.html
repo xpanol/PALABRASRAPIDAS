@@ -14,7 +14,7 @@ html, body {
   overflow: hidden;
 }
 
-/* GRID 2x3, proporcje 9:16 wideo */
+/* GRID 2x3 - 6 wideo */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -35,8 +35,8 @@ html, body {
 }
 
 video {
+  height: 90%; /* ograniczenie, aby wszystkie 6 mieściło się w 100vh */
   width: auto;
-  height: 100%;
   object-fit: contain;
   background: #000;
   display: block;
