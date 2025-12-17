@@ -17,11 +17,11 @@ html, body {
 /* GRID 2x3 - 6 wideo */
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);  /* 3 kolumny */
+  grid-template-rows: repeat(2, 1fr);  /* 2 rzędy */
   gap: 5px;
-  width: 100vw;
-  height: 100vh;
+  width: 100vw;  /* Szerokość ekranu */
+  height: 100vh;  /* Wysokość ekranu */
   box-sizing: border-box;
 }
 
@@ -32,12 +32,13 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;  /* Ukrywa wszystko poza elementem */
 }
 
 video {
-  height: 90%; /* ograniczenie, aby wszystkie 6 mieściło się w 100vh */
-  width: auto;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;  /* Zachowuje proporcje 9:16 */
   background: #000;
   display: block;
 }
