@@ -15,23 +15,21 @@
       overflow: hidden;
     }
 
-    /* Grid layout: 2 rows and 3 columns */
     .video-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);  /* 3 kolumny */
-      grid-template-rows: repeat(2, 1fr);  /* 2 rzędy */
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
       gap: 5px;
       width: 100vw;
       height: 100vh;
       box-sizing: border-box;
-      align-items: center;
-      justify-items: center;
     }
 
     .video-box {
       position: relative;
       width: 100%;
       height: 100%;
+      background: #000;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -41,12 +39,12 @@
     video {
       width: 100%;
       height: 100%;
-      object-fit: contain;  /* Ensures the video maintains its aspect ratio */
-      background: #000;
+      object-fit: contain;
       display: block;
+      /* Dodatek dla iOS, zapobiega "mruganiu" przy ładowaniu */
+      -webkit-playsinline: playsinline;
     }
 
-    /* Play button */
     .play-overlay {
       position: absolute;
       width: 64px;
@@ -58,10 +56,21 @@
       align-items: center;
       cursor: pointer;
       z-index: 10;
+      transition: opacity 0.3s;
+    }
+
+    /* Ukrywamy overlay, gdy wideo gra (opcjonalnie) */
+    .video-box.is-playing .play-overlay {
+      opacity: 0;
+    }
+    /* Pokazujemy przy pauzie lub najechaniu myszką */
+    .video-box.is-playing:hover .play-overlay {
+      opacity: 1;
     }
 
     .play-overlay.play::after {
       content: "";
+      margin-left: 5px; /* Wyśrodkowanie optyczne trójkąta */
       border-left: 22px solid #F8AC10;
       border-top: 14px solid transparent;
       border-bottom: 14px solid transparent;
@@ -80,30 +89,10 @@
 
 <div class="video-grid">
   <div class="video-box">
-    <video preload="auto" playsinline src="videos/video1.mp4"></video>
+    <video preload="metadata" playsinline webkit-playsinline src="videos/video1.mp4#t=0.1"></video>
     <div class="play-overlay play"></div>
   </div>
-  <div class="video-box">
-    <video preload="auto" playsinline src="videos/video2.mp4"></video>
-    <div class="play-overlay play"></div>
   </div>
-  <div class="video-box">
-    <video preload="auto" playsinline src="videos/video3.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-  <div class="video-box">
-    <video preload="auto" playsinline src="videos/video4.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-  <div class="video-box">
-    <video preload="auto" playsinline src="videos/video5.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-  <div class="video-box">
-    <video preload="auto" playsinline src="videos/video6.mp4"></video>
-    <div class="play-overlay play"></div>
-  </div>
-</div>
 
 <script>
 const boxes = document.querySelectorAll('.video-box');
@@ -112,16 +101,34 @@ boxes.forEach(box => {
   const video = box.querySelector('video');
   const overlay = box.querySelector('.play-overlay');
 
-  // Kliknięcie na przycisk play/pause
-  overlay.addEventListener('click', e => {
-    e.stopPropagation();
+  // Funkcja przełączająca
+  const togglePlay = () => {
     if (video.paused) {
-      video.play();
-      overlay.classList.replace('play', 'pause');
+      // W Safari play() zwraca Promise
+      video.play().catch(error => {
+        console.error("Autoplay zablokowany lub błąd ładowania:", error);
+      });
     } else {
       video.pause();
-      overlay.classList.replace('pause', 'play');
     }
+  };
+
+  overlay.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlay();
+  });
+
+  // Reagowanie na stan wideo (bezpieczniejsze niż tylko kliknięcie)
+  video.addEventListener('play', () => {
+    overlay.classList.remove('play');
+    overlay.classList.add('pause');
+    box.classList.add('is-playing');
+  });
+
+  video.addEventListener('pause', () => {
+    overlay.classList.remove('pause');
+    overlay.classList.add('play');
+    box.classList.remove('is-playing');
   });
 });
 </script>
