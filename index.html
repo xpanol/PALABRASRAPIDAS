@@ -3,150 +3,166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>XPANOL Video Grid - Fixed Aspect Ratio</title>
+  <title>XPANOL Video Grid - Zoom Focus</title>
   <style>
     * { box-sizing: border-box; }
     html, body {
       margin: 0; padding: 0;
       width: 100%; height: 100%;
-      background: #000;
-      font-family: sans-serif;
+      background: #000; font-family: sans-serif;
       overflow-x: hidden;
     }
 
-    /* DESKTOP: 3 kolumny, 2 rzędy */
+    /* GRID DESKTOP */
     .video-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 50vh);
-      width: 100vw;
-      height: 100vh;
-      gap: 10px; /* Większy odstęp dla przejrzystości */
-      background: #000;
+      width: 100vw; height: 100vh;
+      gap: 10px;
+      transition: filter 0.3s ease;
     }
 
-    /* MOBILE: 1 film na ekran */
-    @media (max-width: 768px) {
-      body { overflow-y: auto; scroll-snap-type: y mandatory; }
-      .video-grid {
-        display: block;
-        height: auto;
-      }
-      .video-box {
-        width: 100vw;
-        height: 100vh;
-        scroll-snap-align: start;
-      }
-    }
+    /* Ukrywanie grida gdy wideo jest powiększone (opcjonalnie dla efektu) */
+    .grid-blur { filter: blur(5px) brightness(0.5); }
 
     .video-box {
       position: relative;
-      background: #000;
-      overflow: hidden;
+      background: #111;
+      cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     video {
-      /* KLUCZOWE: contain zamiast cover zapobiega przycinaniu */
-      width: 100%;
-      height: 100%;
-      object-fit: contain; 
-      display: block;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      pointer-events: none; /* Kliknięcie obsługuje rodzic */
     }
 
-    /* Przycisk Play */
-    .play-overlay {
-      position: absolute;
-      width: 60px; height: 60px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      border-radius: 50%;
-      z-index: 10;
-      display: flex;
+    /* MODAL - POWIĘKSZONE WIDEO */
+    #video-focus-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: none; /* Domyślnie ukryty */
       justify-content: center;
       align-items: center;
-      pointer-events: none;
+      z-index: 1000;
+      opacity: 0;
       transition: opacity 0.3s ease;
     }
 
-    /* Ukrywamy ikonę gdy wideo gra */
-    .video-box.is-playing .play-overlay {
-      opacity: 0;
+    #video-focus-overlay.active {
+      display: flex;
+      opacity: 1;
     }
 
-    .play-overlay::after {
+    #focused-video {
+      height: 90vh; /* Powiększony, ale zostawia margines */
+      max-width: 95vw;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(248, 172, 16, 0.3);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px; right: 30px;
+      color: #fff; font-size: 40px;
+      cursor: pointer; z-index: 1001;
+    }
+
+    /* Ikona Play w Gridzie */
+    .play-hint {
+      position: absolute;
+      width: 50px; height: 50px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .play-hint::after {
       content: "";
-      margin-left: 5px;
-      border-left: 20px solid #F8AC10;
-      border-top: 12px solid transparent;
-      border-bottom: 12px solid transparent;
+      margin-left: 4px;
+      border-left: 15px solid #F8AC10;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+    }
+
+    @media (max-width: 768px) {
+      .video-grid { display: block; }
+      .video-box { height: 100vh; width: 100vw; }
     }
   </style>
 </head>
 <body>
 
-<div class="video-grid">
-  <div class="video-box" onclick="handleVideo(this)">
-    <video playsinline webkit-playsinline preload="metadata" loop src="videos/video1.mp4#t=0.1"></video>
-    <div class="play-overlay"></div>
-  </div>
+<div id="video-focus-overlay" onclick="closeVideo()">
+  <span class="close-btn">&times;</span>
+  <video id="focused-video" playsinline controls loop src=""></video>
+</div>
 
-  <div class="video-box" onclick="handleVideo(this)">
-    <video playsinline webkit-playsinline preload="metadata" loop src="videos/video2.mp4#t=0.1"></video>
-    <div class="play-overlay"></div>
+<div class="video-grid" id="main-grid">
+  <div class="video-box" onclick="zoomVideo(this)">
+    <video preload="metadata" src="videos/video1.mp4#t=0.1"></video>
+    <div class="play-hint"></div>
   </div>
-
-  <div class="video-box" onclick="handleVideo(this)">
-    <video playsinline webkit-playsinline preload="metadata" loop src="videos/video3.mp4#t=0.1"></video>
-    <div class="play-overlay"></div>
+  <div class="video-box" onclick="zoomVideo(this)">
+    <video preload="metadata" src="videos/video2.mp4#t=0.1"></video>
+    <div class="play-hint"></div>
   </div>
-
-  <div class="video-box" onclick="handleVideo(this)">
-    <video playsinline webkit-playsinline preload="metadata" loop src="videos/video4.mp4#t=0.1"></video>
-    <div class="play-overlay"></div>
+  <div class="video-box" onclick="zoomVideo(this)">
+    <video preload="metadata" src="videos/video3.mp4#t=0.1"></video>
+    <div class="play-hint"></div>
   </div>
-
-  <div class="video-box" onclick="handleVideo(this)">
-    <video playsinline webkit-playsinline preload="metadata" loop src="videos/video5.mp4#t=0.1"></video>
-    <div class="play-overlay"></div>
+  <div class="video-box" onclick="zoomVideo(this)">
+    <video preload="metadata" src="videos/video4.mp4#t=0.1"></video>
+    <div class="play-hint"></div>
   </div>
-
-  <div class="video-box" onclick="handleVideo(this)">
-    <video playsinline webkit-playsinline preload="metadata" loop src="videos/video6.mp4#t=0.1"></video>
-    <div class="play-overlay"></div>
+  <div class="video-box" onclick="zoomVideo(this)">
+    <video preload="metadata" src="videos/video5.mp4#t=0.1"></video>
+    <div class="play-hint"></div>
+  </div>
+  <div class="video-box" onclick="zoomVideo(this)">
+    <video preload="metadata" src="videos/video6.mp4#t=0.1"></video>
+    <div class="play-hint"></div>
   </div>
 </div>
 
 <script>
-  function handleVideo(box) {
-    const video = box.querySelector('video');
-    
-    if (video.paused) {
-      // Opcjonalnie: zatrzymaj inne filmy, by oszczędzać procesor w Safari
-      // document.querySelectorAll('video').forEach(v => {
-      //   v.pause();
-      //   v.parentElement.classList.remove('is-playing');
-      // });
+  const overlay = document.getElementById('video-focus-overlay');
+  const focusedVideo = document.getElementById('focused-video');
+  const grid = document.getElementById('main-grid');
 
-      video.play().then(() => {
-        box.classList.add('is-playing');
-      }).catch(err => {
-        // Fallback dla restrykcji Safari (wyciszenie rozwiązuje problem blokady)
-        video.muted = true;
-        video.play();
-        box.classList.add('is-playing');
-      });
-    } else {
-      video.pause();
-      box.classList.remove('is-playing');
-    }
+  function zoomVideo(box) {
+    const sourceVideo = box.querySelector('video');
+    
+    // Ustawienie źródła i czasu rozpoczęcia dla płynności
+    focusedVideo.src = sourceVideo.src;
+    focusedVideo.currentTime = sourceVideo.currentTime;
+    
+    // Aktywacja overlay
+    overlay.classList.add('active');
+    grid.classList.add('grid-blur');
+
+    // Autoplay w powiększeniu (z obsługą Safari)
+    focusedVideo.play().catch(() => {
+        focusedVideo.muted = true;
+        focusedVideo.play();
+    });
   }
 
-  // Obsługa zakończenia wideo (jeśli usuniesz atrybut loop)
-  document.querySelectorAll('video').forEach(v => {
-    v.onended = () => v.parentElement.classList.remove('is-playing');
+  function closeVideo() {
+    focusedVideo.pause();
+    overlay.classList.remove('active');
+    grid.classList.remove('grid-blur');
+    focusedVideo.src = ""; // Czyścimy src, by zatrzymać pobieranie danych
+  }
+
+  // Zamknij klawiszem ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") closeVideo();
   });
 </script>
 
