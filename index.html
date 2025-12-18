@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>XPANOL Video Grid</title>
+  <title>XPANOL Video Grid - Fixed Aspect Ratio</title>
   <style>
     * { box-sizing: border-box; }
     html, body {
@@ -11,36 +11,37 @@
       width: 100%; height: 100%;
       background: #000;
       font-family: sans-serif;
-      overflow-x: hidden; /* Pozwalamy na przewijanie w pionie na telefonie */
+      overflow-x: hidden;
     }
 
-    /* Układ domyślny: KOMPUTER (3 kolumny, 2 rzędy) */
+    /* DESKTOP: 3 kolumny, 2 rzędy */
     .video-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 50vh);
       width: 100vw;
       height: 100vh;
-      gap: 2px;
+      gap: 10px; /* Większy odstęp dla przejrzystości */
+      background: #000;
     }
 
-    /* Układ MOBILNY (Telefony) */
+    /* MOBILE: 1 film na ekran */
     @media (max-width: 768px) {
-      body { overflow-y: auto; } /* Włączamy scroll pionowy */
+      body { overflow-y: auto; scroll-snap-type: y mandatory; }
       .video-grid {
-        display: block; /* Filmy jeden pod drugim */
+        display: block;
         height: auto;
       }
       .video-box {
         width: 100vw;
-        height: 100vh; /* Każdy film zajmuje cały ekran telefonu */
-        scroll-snap-align: start; /* Opcjonalnie: przyciąganie do ekranu */
+        height: 100vh;
+        scroll-snap-align: start;
       }
     }
 
     .video-box {
       position: relative;
-      background: #111;
+      background: #000;
       overflow: hidden;
       display: flex;
       justify-content: center;
@@ -48,18 +49,19 @@
     }
 
     video {
+      /* KLUCZOWE: contain zamiast cover zapobiega przycinaniu */
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Wypełnia przestrzeń (format TikTok) */
+      object-fit: contain; 
       display: block;
-      background: #000;
     }
 
     /* Przycisk Play */
     .play-overlay {
       position: absolute;
-      width: 70px; height: 70px;
-      background: rgba(255, 255, 255, 0.3);
+      width: 60px; height: 60px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.5);
       border-radius: 50%;
       z-index: 10;
       display: flex;
@@ -69,7 +71,7 @@
       transition: opacity 0.3s ease;
     }
 
-    /* Ukrywamy ikonę gdy gra */
+    /* Ukrywamy ikonę gdy wideo gra */
     .video-box.is-playing .play-overlay {
       opacity: 0;
     }
@@ -77,9 +79,9 @@
     .play-overlay::after {
       content: "";
       margin-left: 5px;
-      border-left: 24px solid #F8AC10;
-      border-top: 15px solid transparent;
-      border-bottom: 15px solid transparent;
+      border-left: 20px solid #F8AC10;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
     }
   </style>
 </head>
@@ -121,14 +123,17 @@
   function handleVideo(box) {
     const video = box.querySelector('video');
     
-    // Zatrzymujemy inne filmy (opcjonalne, dla lepszej wydajności na Safari)
     if (video.paused) {
-      // document.querySelectorAll('video').forEach(v => v.pause()); // Odkomentuj, by grał tylko jeden na raz
-      
+      // Opcjonalnie: zatrzymaj inne filmy, by oszczędzać procesor w Safari
+      // document.querySelectorAll('video').forEach(v => {
+      //   v.pause();
+      //   v.parentElement.classList.remove('is-playing');
+      // });
+
       video.play().then(() => {
         box.classList.add('is-playing');
       }).catch(err => {
-        console.log("Autoplay zablokowany, próba z wyciszeniem...");
+        // Fallback dla restrykcji Safari (wyciszenie rozwiązuje problem blokady)
         video.muted = true;
         video.play();
         box.classList.add('is-playing');
@@ -139,10 +144,9 @@
     }
   }
 
-  // Naprawa Safari: wymuszenie odświeżenia layoutu
-  window.addEventListener('resize', () => {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  // Obsługa zakończenia wideo (jeśli usuniesz atrybut loop)
+  document.querySelectorAll('video').forEach(v => {
+    v.onended = () => v.parentElement.classList.remove('is-playing');
   });
 </script>
 
