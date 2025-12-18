@@ -1,25 +1,36 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>XPANOL Video Grid - Pro Controls</title>
+  <title>XPANOL Video Grid - Special Elite Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --brand-color: #f8ac10;
+    }
+
     * { box-sizing: border-box; }
     html, body {
       margin: 0; padding: 0;
       width: 100%; height: 100%;
-      background: #000; font-family: sans-serif;
+      background: #000;
+      font-family: 'Special Elite', system-ui, serif;
       overflow: hidden;
     }
 
-    /* GRID (3x2 Desktop, 1x1 Mobile) */
+    /* --- GRID VIEW (WIDOK OGÓLNY) --- */
     .video-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 50vh);
       width: 100vw; height: 100vh;
-      gap: 10px;
+      gap: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .video-grid { display: block; overflow-y: auto; }
+      .video-box { height: 100vh; width: 100vw; }
     }
 
     .video-box {
@@ -32,10 +43,27 @@
     .video-box video {
       width: 100%; height: 100%;
       object-fit: contain;
+    }
+
+    /* Przycisk Play w Gridzie (Biały półprzezroczysty z żółtym trójkątem) */
+    .grid-play-btn {
+      position: absolute;
+      width: 64px; height: 64px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      display: flex; justify-content: center; align-items: center;
       pointer-events: none;
     }
 
-    /* OVERLAY DLA AKTYWNEGO WIDEO */
+    .grid-play-btn::after {
+      content: "";
+      margin-left: 5px;
+      border-left: 20px solid var(--brand-color);
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+    }
+
+    /* --- FOCUS VIEW (WIDOK INDYWIDUALNY) --- */
     #video-focus-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -52,74 +80,96 @@
 
     .video-container {
       position: relative;
-      height: 80vh; /* Zostawiamy miejsce na dole na przyciski */
-      max-width: 95vw;
+      width: 100%;
+      max-width: 500px; /* Szerokość dla formatu pionowego */
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
 
     #focused-video {
+      width: 100%;
+      max-height: 70vh;
+      border-radius: 4px;
+    }
+
+    /* PASEK POSTĘPU */
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      margin-top: 10px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    #progress-bar {
+      width: 0%;
       height: 100%;
-      border-radius: 10px;
+      background: var(--brand-color);
+      transition: width 0.1s linear;
     }
 
     /* PANEL STEROWANIA */
     .controls-panel {
       display: flex;
-      gap: 30px;
-      margin-top: 20px;
+      gap: 20px;
+      margin-top: 25px;
       align-items: center;
     }
 
     .control-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      color: white;
-      padding: 15px 25px;
-      border-radius: 50px;
+      background: transparent;
+      border: 2px solid var(--brand-color);
+      color: var(--brand-color);
+      padding: 10px 20px;
+      border-radius: 5px;
       cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s;
-      min-width: 80px;
-      text-align: center;
+      font-family: 'Special Elite', serif;
+      font-size: 18px;
+      transition: all 0.2s;
     }
 
-    .control-btn:hover { background: rgba(248, 172, 16, 0.5); }
+    .control-btn:hover {
+      background: var(--brand-color);
+      color: #000;
+    }
 
     .close-x {
       position: absolute;
       top: 20px; right: 30px;
-      color: #777; font-size: 35px;
+      color: var(--brand-color);
+      font-size: 40px;
       cursor: pointer;
-    }
-
-    @media (max-width: 768px) {
-      .video-grid { display: block; overflow-y: auto; }
-      .video-box { height: 100vh; width: 100vw; }
-      .controls-panel { gap: 15px; }
     }
   </style>
 </head>
 <body>
 
-<div class="video-grid" id="main-grid">
+<div class="video-grid">
   <div class="video-box" onclick="zoomVideo(this)">
     <video preload="metadata" src="videos/video1.mp4#t=0.1"></video>
+    <div class="grid-play-btn"></div>
   </div>
   <div class="video-box" onclick="zoomVideo(this)">
     <video preload="metadata" src="videos/video2.mp4#t=0.1"></video>
+    <div class="grid-play-btn"></div>
   </div>
   <div class="video-box" onclick="zoomVideo(this)">
     <video preload="metadata" src="videos/video3.mp4#t=0.1"></video>
+    <div class="grid-play-btn"></div>
   </div>
   <div class="video-box" onclick="zoomVideo(this)">
     <video preload="metadata" src="videos/video4.mp4#t=0.1"></video>
+    <div class="grid-play-btn"></div>
   </div>
   <div class="video-box" onclick="zoomVideo(this)">
     <video preload="metadata" src="videos/video5.mp4#t=0.1"></video>
+    <div class="grid-play-btn"></div>
   </div>
   <div class="video-box" onclick="zoomVideo(this)">
     <video preload="metadata" src="videos/video6.mp4#t=0.1"></video>
+    <div class="grid-play-btn"></div>
   </div>
 </div>
 
@@ -128,12 +178,16 @@
   
   <div class="video-container">
     <video id="focused-video" playsinline loop src=""></video>
-  </div>
+    
+    <div class="progress-container" onclick="seek(event)">
+      <div id="progress-bar"></div>
+    </div>
 
-  <div class="controls-panel">
-    <button class="control-btn" onclick="skip(-5)">-5s</button>
-    <button class="control-btn" id="play-pause-btn" onclick="togglePlay()">PAUZA</button>
-    <button class="control-btn" onclick="skip(5)">+5s</button>
+    <div class="controls-panel">
+      <button class="control-btn" onclick="skip(-5)">&lt;&lt;</button>
+      <button class="control-btn" id="play-pause-btn" onclick="togglePlay()">PAUSE</button>
+      <button class="control-btn" onclick="skip(5)">&gt;&gt;</button>
+    </div>
   </div>
 </div>
 
@@ -141,18 +195,18 @@
   const overlay = document.getElementById('video-focus-overlay');
   const focusedVideo = document.getElementById('focused-video');
   const playBtn = document.getElementById('play-pause-btn');
+  const progressBar = document.getElementById('progress-bar');
 
   function zoomVideo(box) {
-    const src = box.querySelector('video').src;
-    focusedVideo.src = src;
+    focusedVideo.src = box.querySelector('video').src;
     overlay.classList.add('active');
     
     focusedVideo.play().then(() => {
-      playBtn.innerText = "PAUZA";
+      playBtn.innerText = "PAUSE";
     }).catch(() => {
       focusedVideo.muted = true;
       focusedVideo.play();
-      playBtn.innerText = "PAUZA (wycisz)";
+      playBtn.innerText = "UNMUTE";
     });
   }
 
@@ -165,7 +219,7 @@
   function togglePlay() {
     if (focusedVideo.paused) {
       focusedVideo.play();
-      playBtn.innerText = "PAUZA";
+      playBtn.innerText = "PAUSE";
     } else {
       focusedVideo.pause();
       playBtn.innerText = "PLAY";
@@ -176,7 +230,21 @@
     focusedVideo.currentTime += seconds;
   }
 
-  // Zamknij klikając w tło (poza kontenerem wideo i przyciskami)
+  // Obsługa paska postępu
+  focusedVideo.ontimeupdate = function() {
+    const percentage = (focusedVideo.currentTime / focusedVideo.duration) * 100;
+    progressBar.style.width = percentage + "%";
+  };
+
+  function seek(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+    const seekTime = (x / width) * focusedVideo.duration;
+    focusedVideo.currentTime = seekTime;
+  }
+
+  // Zamykanie tłem
   overlay.onclick = function(e) {
     if (e.target === overlay) closeVideo();
   };
