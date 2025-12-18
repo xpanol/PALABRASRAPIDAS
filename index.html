@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XPANOL Video Grid</title>
+  <title>XPANOL Video Grid - Fixed</title>
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      background: #000; font-family: sans-serif;
       overflow: hidden;
     }
 
@@ -20,66 +17,49 @@
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 1fr);
       gap: 5px;
-      width: 100vw;
-      height: 100vh;
+      width: 100vw; height: 100vh;
       box-sizing: border-box;
     }
 
     .video-box {
       position: relative;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
+      width: 100%; height: 100%;
+      background: #111; /* Kolor tła zanim wideo się załaduje */
     }
 
     video {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: contain;
       display: block;
-      /* Dodatek dla iOS, zapobiega "mruganiu" przy ładowaniu */
-      -webkit-playsinline: playsinline;
     }
 
     .play-overlay {
       position: absolute;
-      width: 64px;
-      height: 64px;
-      background: rgba(255,255,255,0.7);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px; height: 60px;
+      background: rgba(255,255,255,0.8);
       border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
       display: flex;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
-      z-index: 10;
-      transition: opacity 0.3s;
     }
 
-    /* Ukrywamy overlay, gdy wideo gra (opcjonalnie) */
-    .video-box.is-playing .play-overlay {
-      opacity: 0;
-    }
-    /* Pokazujemy przy pauzie lub najechaniu myszką */
-    .video-box.is-playing:hover .play-overlay {
-      opacity: 1;
-    }
-
-    .play-overlay.play::after {
+    /* Ikona Play */
+    .play-overlay.btn-play::after {
       content: "";
-      margin-left: 5px; /* Wyśrodkowanie optyczne trójkąta */
-      border-left: 22px solid #F8AC10;
-      border-top: 14px solid transparent;
-      border-bottom: 14px solid transparent;
+      margin-left: 5px;
+      border-left: 20px solid #F8AC10;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
     }
 
-    .play-overlay.pause::after {
+    /* Ikona Pause */
+    .play-overlay.btn-pause::after {
       content: "";
-      width: 18px;
-      height: 22px;
+      width: 16px; height: 20px;
       border-left: 6px solid #F8AC10;
       border-right: 6px solid #F8AC10;
     }
@@ -89,47 +69,64 @@
 
 <div class="video-grid">
   <div class="video-box">
-    <video preload="metadata" playsinline webkit-playsinline src="videos/video1.mp4#t=0.1"></video>
-    <div class="play-overlay play"></div>
+    <video playsinline webkit-playsinline preload="metadata" src="videos/video1.mp4#t=0.1"></video>
+    <div class="play-overlay btn-play"></div>
   </div>
+  <div class="video-box">
+    <video playsinline webkit-playsinline preload="metadata" src="videos/video2.mp4#t=0.1"></video>
+    <div class="play-overlay btn-play"></div>
   </div>
+  <div class="video-box">
+    <video playsinline webkit-playsinline preload="metadata" src="videos/video3.mp4#t=0.1"></video>
+    <div class="play-overlay btn-play"></div>
+  </div>
+  <div class="video-box">
+    <video playsinline webkit-playsinline preload="metadata" src="videos/video4.mp4#t=0.1"></video>
+    <div class="play-overlay btn-play"></div>
+  </div>
+  <div class="video-box">
+    <video playsinline webkit-playsinline preload="metadata" src="videos/video5.mp4#t=0.1"></video>
+    <div class="play-overlay btn-play"></div>
+  </div>
+  <div class="video-box">
+    <video playsinline webkit-playsinline preload="metadata" src="videos/video6.mp4#t=0.1"></video>
+    <div class="play-overlay btn-play"></div>
+  </div>
+</div>
 
 <script>
-const boxes = document.querySelectorAll('.video-box');
+document.querySelectorAll('.video-box').forEach(box => {
+  const v = box.querySelector('video');
+  const btn = box.querySelector('.play-overlay');
 
-boxes.forEach(box => {
-  const video = box.querySelector('video');
-  const overlay = box.querySelector('.play-overlay');
-
-  // Funkcja przełączająca
-  const togglePlay = () => {
-    if (video.paused) {
-      // W Safari play() zwraca Promise
-      video.play().catch(error => {
-        console.error("Autoplay zablokowany lub błąd ładowania:", error);
-      });
+  const updateUI = () => {
+    if (v.paused) {
+      btn.classList.replace('btn-pause', 'btn-play');
     } else {
-      video.pause();
+      btn.classList.replace('btn-play', 'btn-pause');
     }
   };
 
-  overlay.addEventListener('click', (e) => {
-    e.stopPropagation();
-    togglePlay();
+  // Obsługa kliknięcia bezpośrednio na box
+  box.addEventListener('click', () => {
+    if (v.paused) {
+      // Obietnica (Promise) pozwala wyłapać błąd Safari
+      const playPromise = v.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log("Safari blokuje: ", error);
+          // Jeśli blokuje, spróbuj wyciszyć i puścić (to prawie zawsze działa)
+          v.muted = true;
+          v.play();
+        });
+      }
+    } else {
+      v.pause();
+    }
   });
 
-  // Reagowanie na stan wideo (bezpieczniejsze niż tylko kliknięcie)
-  video.addEventListener('play', () => {
-    overlay.classList.remove('play');
-    overlay.classList.add('pause');
-    box.classList.add('is-playing');
-  });
-
-  video.addEventListener('pause', () => {
-    overlay.classList.remove('pause');
-    overlay.classList.add('play');
-    box.classList.remove('is-playing');
-  });
+  v.onplay = updateUI;
+  v.onpause = updateUI;
 });
 </script>
 
